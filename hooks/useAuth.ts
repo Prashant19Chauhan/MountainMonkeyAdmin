@@ -32,8 +32,10 @@ export default function useAuth() {
     mutationFn: LoginApi,
 
     onSuccess: (data) => {
-      useAuthStore.getState().setAuth(data?.accessToken, data?.user)
-      router.push("/")
+      const accessToken = data?.data?.accessToken || data?.accessToken;
+      const user = data?.data?.user || data?.user;
+      useAuthStore.getState().setAuth(accessToken, user);
+      router.push("/");
     },
   });
 
