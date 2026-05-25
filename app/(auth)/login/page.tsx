@@ -30,7 +30,7 @@ export default function LoginPage() {
                <span className="text-[10px] font-bold">W</span>
             </div>
           </div>
-          <span className="text-xl font-semibold tracking-tight">Wanderly.</span>
+          <span className="text-xl font-semibold tracking-tight">Wanderly. final test</span>
         </div>
 
         {/* Hero Text */}
