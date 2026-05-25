@@ -14,7 +14,6 @@ export default function LoginPage() {
       <div className="relative hidden w-1/2 md:flex flex-col justify-between p-12 overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          fuck offffffffff
           <Image
             src="/bg1.jpeg" // Replace with your coastal town image
             alt="Coastal destination at sunset"
@@ -31,7 +30,7 @@ export default function LoginPage() {
                <span className="text-[10px] font-bold">W</span>
             </div>
           </div>
-          <span className="text-xl font-semibold tracking-tight">Wanderly.</span>
+          <span className="text-xl font-semibold tracking-tight">Wanderly. testing --------</span>
         </div>
 
         {/* Hero Text */}
