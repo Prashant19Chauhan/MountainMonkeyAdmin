@@ -22,9 +22,13 @@ jobs:
           script: |
             cd mountainMonkey/adminDashboard
 
-            git pull origin master
+            git fetch origin
+
+            git reset --hard origin/master
 
             npm install
+
+            rm -rf .next
 
             npm run build
 
