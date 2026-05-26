@@ -3,6 +3,7 @@
 import React from 'react';
 import { ArrowLeft, Package, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import Image from '@/components/ui/Image';
 
 import { TourPackage } from '@/types/type';
 
@@ -38,7 +39,7 @@ export default function PackageHeader({ pkg, onBack }: PackageHeaderProps) {
       <div className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
         <div className="relative h-[320px] md:h-[400px] w-full bg-slate-100">
           {pkg.images && pkg.images.length > 0 ? (
-            <img
+            <Image
               src={pkg.images[0]}
               alt={pkg.title}
               className="w-full h-full object-cover"

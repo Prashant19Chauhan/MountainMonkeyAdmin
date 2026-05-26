@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { MapPin, Clock, Users, Eye, Edit2, Edit3, Trash2, Package, Check, X } from 'lucide-react';
 import { TourPackage } from '@/types/type';
+import Image from '../ui/Image';
 
 interface InlinePriceUpdaterProps {
   id: string;
@@ -99,7 +100,7 @@ export const PackagesTable = ({ packages, isPackagesLoading, onPageChange, page,
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       {pkg.images?.[0] ? (
-                        <img src={pkg.images[0]} alt="" className="w-10 h-10 rounded-lg object-cover border border-slate-100" />
+                        <Image src={pkg.images[0]} alt="" className="w-10 h-10 rounded-lg object-cover border border-slate-100" />
                       ) : (
                         <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center border border-slate-200">
                           <Package className="w-5 h-5 text-slate-400" />

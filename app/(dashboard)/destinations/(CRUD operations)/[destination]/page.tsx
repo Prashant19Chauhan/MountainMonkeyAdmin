@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/ui/Image";
 import React, { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { 
@@ -60,7 +61,7 @@ export default function DestinationPage() {
       <div className="relative h-[300px] md:h-[400px] w-full overflow-hidden">
 
         {destination.images?.[0] ? (
-          <img 
+          <Image 
             src={destination.images[0]} 
             alt={destination.name} 
             className="w-full h-full object-cover"
@@ -212,7 +213,7 @@ export default function DestinationPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {destination.images.slice(1).map((img: string, i: number) => (
                             <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-slate-200 group">
-                                <img src={img} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                <Image src={img} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                             </div>
                         ))}
                     </div>

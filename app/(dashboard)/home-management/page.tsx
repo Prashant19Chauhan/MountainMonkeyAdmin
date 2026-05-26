@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/ui/Image";
 import React, { useState, useEffect } from 'react';
 import { 
   getHomeHeroSection, 
@@ -330,7 +331,7 @@ export default function HomeManagementPage() {
                 <div key={ad._id} className="group bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
                   <div className="relative aspect-video bg-slate-100 rounded-[2rem] overflow-hidden mb-6">
                     {ad.imageUrl ? (
-                      <img src={ad.imageUrl} className="w-full h-full object-cover" />
+                      <Image src={ad.imageUrl} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-200">
                         <ImageIcon size={48} />

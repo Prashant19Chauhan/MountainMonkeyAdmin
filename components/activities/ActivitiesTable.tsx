@@ -1,3 +1,4 @@
+import Image from "@/components/ui/Image";
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Globe, MapPin, Filter, Clock, Star, Eye, Edit2, Edit3, Trash2, Loader2, Check, X } from 'lucide-react';
@@ -88,7 +89,7 @@ export const ActivitiesTable = ({ activities, isActivitiesLoading, onDeleteClick
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200">
                     {item.images && item.images[0] ? (
-                      <img src={item.images[0]} alt="" className="w-full h-full object-cover" />
+                      <Image src={item.images[0]} alt="" className="w-full h-full object-cover" />
                     ) : (
                       <Globe className="w-5 h-5 text-slate-300" />
                     )}

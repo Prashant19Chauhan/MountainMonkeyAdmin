@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/ui/Image";
 import React, { useState } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { Plus, Trash2, Bed, Image as ImageIcon, X } from "lucide-react";
@@ -239,7 +240,7 @@ export default function RoomsTab() {
                 <div className="flex flex-wrap gap-2 mt-2">
                   {roomImages.map((imageUrl: string, imgIdx: number) => (
                     <div key={imgIdx} className="relative group overflow-hidden rounded-lg">
-                      <img
+                      <Image
                         src={imageUrl}
                         alt={`Room type ${idx + 1}`}
                         className="w-20 h-20 object-cover rounded-lg border border-slate-200"

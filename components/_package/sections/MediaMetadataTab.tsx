@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/ui/Image";
 import React, { useState, useEffect } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { Tags, Briefcase, Image as ImageIcon, Trash2, Plus, X } from "lucide-react";
@@ -352,7 +353,7 @@ export default function MediaMetadataTab() {
             <div className="flex flex-wrap gap-2">
               {images.map((img, idx) => (
                 <div key={idx} className="w-32 h-32 relative group border border-gray-200 rounded-lg overflow-hidden">
-                  <img src={img} alt="Package image" className="w-full h-full object-cover" />
+                  <Image src={img} alt="Package image" className="w-full h-full object-cover" />
                   <button
                     type="button"
                     onClick={() => handleImageRemove(idx)}

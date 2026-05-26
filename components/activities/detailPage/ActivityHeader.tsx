@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/ui/Image";
 import React from 'react';
 import { ArrowLeft, Compass, MapPin } from 'lucide-react';
 import Link from 'next/link';
@@ -36,7 +37,7 @@ export default function ActivityHeader({ activity, onBack }: ActivityHeaderProps
       <div className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
         <div className="relative h-[280px] md:h-[350px] w-full bg-slate-100">
           {activity.images && activity.images.length > 0 ? (
-            <img
+            <Image
               src={activity.images[0]}
               alt={activity.name}
               className="w-full h-full object-cover"

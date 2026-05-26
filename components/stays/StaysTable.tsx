@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Home, MapPin, Star, Eye, Edit2, Edit3, Trash2, Loader2, Check, X } from 'lucide-react';
 import { Stay } from '@/types/type';
+import Image from '../ui/Image';
 
 interface InlinePriceUpdaterProps {
   id: string;
@@ -87,7 +88,7 @@ export const StaysTable = ({ stays, isStaysLoading, onDeleteClick, onUpdatePrice
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-10 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200 overflow-hidden shrink-0">
                     {property.images?.[0] ? (
-                      <img src={property.images[0]} alt="" className="w-full h-full object-cover" />
+                      <Image src={property.images[0]} alt="" className="w-full h-full object-cover" />
                     ) : (
                       <Home className="w-5 h-5 text-slate-300" />
                     )}

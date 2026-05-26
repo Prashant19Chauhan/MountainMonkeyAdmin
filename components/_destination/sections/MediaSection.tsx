@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/ui/Image";
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Image as ImageIcon, Upload, X } from "lucide-react";
@@ -83,7 +84,7 @@ export default function MediaSection() {
               <div className="flex gap-3 flex-wrap mt-6 relative z-10 justify-center">
                 {images.map((img, index) => (
                   <div key={index} className="relative group/img overflow-hidden rounded-xl">
-                    <img
+                    <Image
                       src={img}
                       alt={`Still ${index + 1}`}
                       className="w-24 h-24 object-cover rounded-xl border border-slate-200"

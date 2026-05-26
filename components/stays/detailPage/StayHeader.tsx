@@ -3,6 +3,7 @@
 import React from 'react';
 import { ArrowLeft, Home, MapPin, Star } from 'lucide-react';
 import Link from 'next/link';
+import Image from '@/components/ui/Image';
 
 import { Stay } from '@/types/type';
 
@@ -36,7 +37,7 @@ export default function StayHeader({ stay, onBack }: StayHeaderProps) {
       <div className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
         <div className="relative h-[280px] md:h-[350px] w-full bg-slate-100">
           {stay.images && stay.images.length > 0 ? (
-            <img
+            <Image
               src={stay.images[0]}
               alt={stay.name}
               className="w-full h-full object-cover"

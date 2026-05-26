@@ -1,3 +1,4 @@
+import Image from "@/components/ui/Image";
 import React from 'react';
 import Link from 'next/link';
 import { MapPin, Star, Package, Eye, Edit3, Trash2, Edit2 } from 'lucide-react';
@@ -34,7 +35,7 @@ export const DestinationsTable = ({ destinations, onDeleteClick }: DestinationsT
                 <td className="px-6 py-5">
                   <div className="flex items-center gap-4">
                     <div className="relative w-12 h-10 rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
-                      <img
+                      <Image
                         src={dest?.images?.[0]}
                         alt={dest?.name}
                         className="object-cover w-full h-full"

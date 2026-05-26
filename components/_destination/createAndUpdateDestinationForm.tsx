@@ -49,6 +49,8 @@ export default function CreateDestination({
   } = destinationHook;
   const { citiesData, isCitiesLoading } = useCity();
 
+  console.log(citiesData)
+
   const handleNext = () => setCurrentStep(s => Math.min(s + 1, SECTIONS.length - 1));
   const handleBack = () => setCurrentStep(s => Math.max(s - 1, 0));
 

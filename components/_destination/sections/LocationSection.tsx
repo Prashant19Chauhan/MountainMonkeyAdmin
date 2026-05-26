@@ -60,7 +60,7 @@ export default function LocationSection({ citiesData, isCitiesLoading }: Locatio
             >
               <option value="">Select major region...</option>
               {isCitiesLoading && <option>Loading archival data...</option>}
-              {citiesData?.locations?.map((city: CityInput) => (
+              {citiesData?.data?.map((city: CityInput) => (
                 <option key={city._id} value={city._id}>
                   {city.name}
                 </option>

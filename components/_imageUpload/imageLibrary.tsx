@@ -2,6 +2,7 @@
 
 import React, { useState, FormEvent, DragEvent, MouseEvent } from 'react';
 import { useMedia } from '@/hooks/useMedia';
+import Image from '../ui/Image';
 import {
   FolderPlus,
   Folder,
@@ -142,7 +143,7 @@ function ImageLibrary({ onSelect, onClose }: ImageLibraryProps) {
       })
       .map((img) => ({
         id: (img._id || img.id) as string,
-        url: `http://localhost:3000${img.url}`,
+        url: img.url,
       }));
 
     if (onSelect) {
@@ -644,8 +645,8 @@ function ImageLibrary({ onSelect, onClose }: ImageLibraryProps) {
 
                   {/* THUMBNAIL DISPLAY */}
                   <div className="aspect-video w-full overflow-hidden bg-slate-50 border-b border-slate-100 relative">
-                    <img
-                      src={`http://localhost:3000${img.url}`}
+                    <Image
+                      src={img.url}
                       alt={img.title}
                       className="w-full h-full object-cover select-none pointer-events-none group-hover:scale-[1.03] transition-transform duration-300"
                     />
@@ -731,7 +732,7 @@ function ImageLibrary({ onSelect, onClose }: ImageLibraryProps) {
             <div>
               <div className="p-5 space-y-4">
                 <div className="w-full aspect-video bg-slate-50 rounded-xl overflow-hidden border border-slate-200 shadow-inner">
-                  <img src={pendingImageSrc} alt="Preview" className="w-full h-full object-cover" />
+                  <Image src={pendingImageSrc} alt="Preview" className="w-full h-full object-cover" />
                 </div>
 
                 <div>

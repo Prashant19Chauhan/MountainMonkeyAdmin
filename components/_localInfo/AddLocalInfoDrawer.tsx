@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/ui/Image";
 import React, { useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { 
@@ -438,7 +439,7 @@ export default function AddLocalInfoForm({ localInfoHook }: AddLocalInfoFormProp
                               <div className="flex flex-wrap gap-2.5">
                                 {food.images?.map((imgUrl: string, imgIdx: number) => (
                                   <div key={imgIdx} className="relative w-14 h-14 rounded-xl border border-slate-200 overflow-hidden group/thumb shadow-inner">
-                                    <img src={imgUrl} alt="Thumbnail" className="w-full h-full object-cover" />
+                                    <Image src={imgUrl} alt="Thumbnail" className="w-full h-full object-cover" />
                                     <button
                                       type="button"
                                       onClick={() => {
@@ -589,7 +590,7 @@ export default function AddLocalInfoForm({ localInfoHook }: AddLocalInfoFormProp
                               <div className="flex flex-wrap gap-2.5">
                                 {place.images?.map((imgUrl: string, imgIdx: number) => (
                                   <div key={imgIdx} className="relative w-14 h-14 rounded-xl border border-slate-200 overflow-hidden group/thumb shadow-inner">
-                                    <img src={imgUrl} alt="Thumbnail" className="w-full h-full object-cover" />
+                                    <Image src={imgUrl} alt="Thumbnail" className="w-full h-full object-cover" />
                                     <button
                                       type="button"
                                       onClick={() => {

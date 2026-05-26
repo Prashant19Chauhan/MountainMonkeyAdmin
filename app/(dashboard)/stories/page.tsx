@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/ui/Image";
 import React, { useState, useEffect } from 'react';
 import { 
   getAllStories, 
@@ -142,7 +143,7 @@ export default function StoriesModerationPage() {
                 {/* Image Placeholder or Actual Image */}
                 <div className="aspect-video bg-slate-100 relative overflow-hidden">
                   {story.images?.[0] ? (
-                    <img src={story.images[0]} alt={story.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <Image src={story.images[0]} alt={story.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-300">
                       <Sparkles size={48} />

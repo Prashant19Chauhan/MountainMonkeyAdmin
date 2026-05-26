@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/ui/Image";
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Plus, X, Image as ImageIcon } from "lucide-react";
@@ -51,7 +52,7 @@ export default function MediaSection() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {images.map((img, index) => (
               <div key={index} className="relative group">
-                <img
+                <Image
                   src={img}
                   alt="Activity image"
                   className="w-full h-32 object-cover rounded-lg border border-gray-200"

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "@/components/ui/Image";
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Image as ImageIcon, X } from "lucide-react";
@@ -54,7 +55,7 @@ export default function ImagesTab() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {images.map((imageUrl, index) => (
               <div key={index} className="relative group overflow-hidden rounded-xl">
-                <img
+                <Image
                   src={imageUrl}
                   alt={`Property ${index + 1}`}
                   className="w-full h-32 object-cover rounded-xl border-2 border-slate-200 hover:border-slate-300 transition-all"
