@@ -1,7 +1,13 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export const StaysPagination = ({ page, setPage, totalPages }: any) => {
+interface StaysPaginationProps {
+  page: number;
+  setPage: (page: number) => void;
+  totalPages: number;
+}
+
+export const StaysPagination = ({ page, setPage, totalPages }: StaysPaginationProps) => {
   return (
     <div className="p-4 md:p-5 bg-slate-50/30 flex flex-col sm:flex-row justify-between items-center border-t border-slate-50 gap-4">
       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic order-2 sm:order-1 text-center sm:text-left">

@@ -29,9 +29,9 @@ export const createDestinationApi = async (formData: destinationInput) => {
     }
 }
 
-export const getDestinationApi = async (id: string) => {
+export const getDestinationApi = async (slug: string) => {
     try{
-        const response = await api.get(`/destinations/${id}`);
+        const response = await api.get(`/destinations/${slug}`);
         return response.data;
     }catch(error){
         if(error instanceof AxiosError){
@@ -41,9 +41,9 @@ export const getDestinationApi = async (id: string) => {
     }
 }
 
-export const updateDestinationApi = async (formData: destinationInput) => {
+export const updateDestinationApi = async (slug: string, formData: destinationInput) => {
     try{
-        const response = await api.put(`/destinations/${formData._id}`, formData);
+        const response = await api.put(`/destinations/${slug}`, formData);
         return response.data;
     }catch(error){
         if(error instanceof AxiosError){
@@ -53,9 +53,9 @@ export const updateDestinationApi = async (formData: destinationInput) => {
     }
 }
 
-export const deleteDestinationApi = async (id: string) => {
+export const deleteDestinationApi = async (slug: string) => {
     try{
-        const response = await api.delete(`/destinations/${id}`);
+        const response = await api.delete(`/destinations/${slug}`);
         return response.data;
     }catch(error){
         if(error instanceof AxiosError){

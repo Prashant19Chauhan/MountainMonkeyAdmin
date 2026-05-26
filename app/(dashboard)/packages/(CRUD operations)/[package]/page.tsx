@@ -1,9 +1,6 @@
-import React from 'react'
+import React from 'react';
+import PackageDetail from '@/components/packages/detailPage/PackageDetail';
 
-function PackagePage() {
-  return (
-    <div>PackagePage</div>
-  )
+export default function PackageDetailPage() {
+  return <PackageDetail />;
 }
-
-export default PackagePage

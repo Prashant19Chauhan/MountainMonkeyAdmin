@@ -1,9 +1,6 @@
-import React from 'react'
+import React from 'react';
+import LocalInfoDetail from '@/components/_localInfo/detailPage/LocalInfoDetail';
 
-function LocalInfoPage() {
-  return (
-    <div>LocalInfoPage</div>
-  )
+export default function LocalInfoDetailPage() {
+  return <LocalInfoDetail />;
 }
-
-export default LocalInfoPage

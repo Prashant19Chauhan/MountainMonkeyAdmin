@@ -24,6 +24,7 @@ import {
 import useLocalInfo from '@/hooks/useLocalInfo';
 import DeleteDialog from '../../../components/mainComponents/deleteDialog';
 import Link from 'next/link';
+import { LocalInfo } from '@/types/type';
 
 export default function LocalGuidesPage() {
   const localInfoHook = useLocalInfo();
@@ -117,7 +118,7 @@ export default function LocalGuidesPage() {
 
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {localInfos.length > 0 ? localInfos.map((info: any) => (
+              {localInfos.length > 0 ? localInfos.map((info: LocalInfo) => (
                 <tr key={info._id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-4">
@@ -127,7 +128,7 @@ export default function LocalGuidesPage() {
                       <div>
                         <div className="font-black text-sm text-slate-900 group-hover:text-blue-600 transition-colors">{info.destinationId?.name || "Global Entry"}</div>
                         <div className="text-[10px] text-slate-400 flex items-center gap-2 mt-0.5 font-bold uppercase tracking-widest italic">
-                          Updated {new Date(info.updatedAt).toLocaleDateString()}
+                          Updated {info.updatedAt ? new Date(info.updatedAt).toLocaleDateString() : 'N/A'}
                         </div>
                       </div>
                     </div>
@@ -171,7 +172,7 @@ export default function LocalGuidesPage() {
                   <td className="px-6 py-4">
                     <div className="flex justify-end gap-1">
                       <Link
-                        href={`/local-informations/${info._id}`}
+                        href={`/local-informations/${info.slug || info._id}`}
                         className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                       >
                         <Eye size={16} />
@@ -183,14 +184,14 @@ export default function LocalGuidesPage() {
                         <Edit3 size={16} />
                       </Link>
                       <Link
-                        href={`/local-informations/update-local-information?id=${info._id}`}
+                        href={`/local-informations/update-local-information?id=${info.slug || info._id}`}
                         className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                       >
                         <Edit2 size={16} />
                       </Link>
                       <button
                         onClick={() => {
-                          setDeleteId(info._id);
+                          setDeleteId(info.slug || info._id || null);
                           setIsDeleteDialogOpen(true);
                         }}
                         className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"

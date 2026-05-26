@@ -7,6 +7,7 @@ import {
     getPackageApi, 
     getPackagesApi, 
     updatePackageApi,
+    updatePackageCurrentPriceApi,
     GetPackagesParams
 } from "@/services/package.service"
 import { useState, useEffect } from "react"
@@ -197,6 +198,17 @@ export default function usePackage() {
         }
     })
 
+    const { mutate: updatePackageCurrentPrice, isPending: isUpdatePriceLoading } = useMutation({
+        mutationFn: ({ id, price }: { id: string; price: number }) => updatePackageCurrentPriceApi(id, price),
+        onSuccess: () => {
+            toast.success("Package price updated successfully");
+            queryClient.invalidateQueries({ queryKey: ["packages"] });
+        },
+        onError: (error: string) => {
+            toast.error(error);
+        }
+    })
+
     const resetForm = () => {
         setFormData(initialFormState);
         setPackageId(null);
@@ -210,6 +222,8 @@ export default function usePackage() {
         packagesError,
         createPackage,
         updatePackage,
+        updatePackageCurrentPrice,
+        isUpdatePriceLoading,
         isCreatePackageLoading,
         createPackageError,
         handlePackageCreate,

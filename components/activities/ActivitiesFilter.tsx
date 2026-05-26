@@ -1,7 +1,12 @@
 import React from 'react';
 import { Search, Globe, ChevronDown } from 'lucide-react';
 
-export const ActivitiesFilter = ({ search, setSearch }: any) => {
+interface ActivitiesFilterProps {
+  search: string;
+  setSearch: (search: string) => void;
+}
+
+export const ActivitiesFilter = ({ search, setSearch }: ActivitiesFilterProps) => {
   return (
     <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-4 items-stretch sm:items-center bg-white">
       <div className="relative flex-1 min-w-0">

@@ -7,7 +7,8 @@ import {
     updateStayApi, 
     deleteStayApi, 
     getStayByIdApi, 
-    getAllStaysApi 
+    getAllStaysApi,
+    updateStayCurrentPriceApi
 } from "@/services/stay.service";
 import { getCitiesApi } from "@/services/city.service";
 import { getDestinationsApi } from "@/services/destination.service";
@@ -139,6 +140,17 @@ export default function useStay() {
         }
     });
 
+    const { mutate: updateStayCurrentPrice, isPending: isUpdatePriceLoading } = useMutation({
+        mutationFn: ({ id, price }: { id: string; price: number }) => updateStayCurrentPriceApi(id, price),
+        onSuccess: () => {
+            toast.success("Stay price updated successfully");
+            queryClient.invalidateQueries({ queryKey: ["stays"] });
+        },
+        onError: (error: any) => {
+            toast.error(error.message || "Failed to update stay price");
+        }
+    });
+
     const resetForm = () => {
         setFormData(initialFormData);
         setEditId(null);
@@ -201,6 +213,8 @@ export default function useStay() {
         setDeleteId,
         createStay,
         updateStay,
+        updateStayCurrentPrice,
+        isUpdatePriceLoading,
         confirmDelete: () => deleteId && deleteStay(deleteId),
         resetForm
     };

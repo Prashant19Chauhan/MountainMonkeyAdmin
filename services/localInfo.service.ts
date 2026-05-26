@@ -14,9 +14,9 @@ export const createLocalInfoApi = async(data: LocalInfoInputType) => {
     }
 }
 
-export const updateLocalInfoApi = async(id: string, data: LocalInfoInputType) => {
+export const updateLocalInfoApi = async(slug: string, data: LocalInfoInputType) => {
     try{
-        const response = await api.put(`/local-info/${id}`, data)
+        const response = await api.put(`/local-info/${slug}`, data)
         return response.data
     }catch(error){
         if(error instanceof AxiosError){
@@ -26,9 +26,9 @@ export const updateLocalInfoApi = async(id: string, data: LocalInfoInputType) =>
     }
 }
 
-export const deleteLocalInfoApi = async(id: string) => {
+export const deleteLocalInfoApi = async(slug: string) => {
     try{
-        const response = await api.delete(`/local-info/${id}`)
+        const response = await api.delete(`/local-info/${slug}`)
         return response.data
     }catch(error){
         if(error instanceof AxiosError){
@@ -38,9 +38,9 @@ export const deleteLocalInfoApi = async(id: string) => {
     }
 }
 
-export const getLocalInfoByIdApi = async(id: string) => {
+export const getLocalInfoByIdApi = async(slug: string) => {
     try{
-        const response = await api.get(`/local-info/${id}`)
+        const response = await api.get(`/local-info/${slug}`)
         return response.data
     }catch(error){
         if(error instanceof AxiosError){

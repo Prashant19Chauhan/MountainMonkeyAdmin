@@ -1,7 +1,12 @@
 import React from 'react';
 import { Search, MapPin, Home, Star } from 'lucide-react';
 
-export const StaysFilter = ({ search, setSearch }: any) => {
+interface StaysFilterProps {
+  search: string;
+  setSearch: (search: string) => void;
+}
+
+export const StaysFilter = ({ search, setSearch }: StaysFilterProps) => {
   return (
     <div className="p-4 md:p-5 border-b border-slate-100 flex flex-col lg:flex-row gap-4 items-stretch lg:items-center bg-white">
       <div className="relative flex-1">

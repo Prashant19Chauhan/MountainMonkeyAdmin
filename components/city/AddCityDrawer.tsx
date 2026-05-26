@@ -110,7 +110,7 @@ export default function AddCityDrawer({ isOpen, onClose, cityHook }: Props) {
                   <button
                     key={tab.id}
                     type="button"
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setActiveTab(tab.id as "basic" | "coordinates")}
                     className={`flex items-center gap-2 px-4 md:px-6 py-3 md:py-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all border-b-2 whitespace-nowrap ${
                       activeTab === tab.id
                         ? "border-slate-900 text-slate-900 bg-white"

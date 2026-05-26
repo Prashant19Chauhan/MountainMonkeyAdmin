@@ -1,7 +1,13 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export const ActivitiesPagination = ({ page, setPage, totalPages }: any) => {
+interface ActivitiesPaginationProps {
+  page: number;
+  setPage: (page: number) => void;
+  totalPages: number;
+}
+
+export const ActivitiesPagination = ({ page, setPage, totalPages }: ActivitiesPaginationProps) => {
   return (
     <div className="p-4 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/30">
       <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest order-2 sm:order-1 italic">

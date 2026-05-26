@@ -1,8 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { MapPin, Star, Package, Eye, Edit3, Trash2, Edit2 } from 'lucide-react';
+import { Destination } from '@/types/type';
 
-export const DestinationsTable = ({ destinations, onDeleteClick }: any) => {
+interface DestinationsTableProps {
+  destinations: Destination[];
+  onDeleteClick: (slug: string) => void;
+}
+
+export const DestinationsTable = ({ destinations, onDeleteClick }: DestinationsTableProps) => {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse">
@@ -23,7 +29,7 @@ export const DestinationsTable = ({ destinations, onDeleteClick }: any) => {
               </td>
             </tr>
           ) : (
-            destinations.map((dest: any) => (
+            destinations.map((dest: Destination) => (
               <tr key={dest._id} className="hover:bg-slate-50/50 transition-all group">
                 <td className="px-6 py-5">
                   <div className="flex items-center gap-4">
@@ -47,7 +53,7 @@ export const DestinationsTable = ({ destinations, onDeleteClick }: any) => {
                     <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 uppercase tracking-tighter">
                       {dest.placeType || 'Global'}
                     </span>
-                    <div className="text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-tighter">ID: {dest._id.substring(0, 10)}</div>
+                    <div className="text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-tighter">Slug: {dest.slug}</div>
                   </div>
                 </td>
                 <td className="px-6 py-5">
@@ -68,7 +74,7 @@ export const DestinationsTable = ({ destinations, onDeleteClick }: any) => {
                 </td>
                 <td className="px-6 py-5">
                   <div className="flex justify-end gap-2 pr-4">
-                    <Link href={`/destinations/${dest._id}`}>
+                    <Link href={`/destinations/${dest.slug}`}>
                       <button className='p-2.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all border border-transparent hover:border-slate-200'>
                         <Eye size={18} />
                       </button>
@@ -78,13 +84,13 @@ export const DestinationsTable = ({ destinations, onDeleteClick }: any) => {
                         <Edit3 size={18} />
                       </button>
                     </Link>
-                    <Link href={`/destinations/update-destination?id=${dest._id}`}>
+                    <Link href={`/destinations/update-destination?id=${dest.slug}`}>
                       <button className="p-2.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100">
                         <Edit2 size={18} />
                       </button>
                     </Link>
                     <button
-                      onClick={() => onDeleteClick(dest._id)}
+                      onClick={() => onDeleteClick(dest.slug)}
                       className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all border border-transparent hover:border-red-100"
                     >
                       <Trash2 size={18} />

@@ -1,7 +1,13 @@
 import React from 'react';
 import { Search, Filter } from 'lucide-react';
 
-export const DestinationsFilter = ({ localSearch, setLocalSearch, totalItems }: any) => {
+interface DestinationsFilterProps {
+  localSearch: string;
+  setLocalSearch: (search: string) => void;
+  totalItems: number;
+}
+
+export const DestinationsFilter = ({ localSearch, setLocalSearch, totalItems }: DestinationsFilterProps) => {
   return (
     <div className="p-4 md:p-5 border-b border-slate-50 flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between bg-white">
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1 max-w-2xl">

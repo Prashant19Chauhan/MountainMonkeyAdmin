@@ -24,7 +24,8 @@ const StaysClient = () => {
     isDeleteDialogOpen,
     setIsDeleteDialogOpen,
     setDeleteId,
-    confirmDelete
+    confirmDelete,
+    updateStayCurrentPrice,
   } = stayHook;
 
   const stays = staysData?.data || [];
@@ -86,6 +87,7 @@ const StaysClient = () => {
           stays={stays} 
           isStaysLoading={isStaysLoading} 
           onDeleteClick={handleDeleteClick} 
+          onUpdatePrice={(id: string, price: number) => updateStayCurrentPrice({ id, price })}
         />
         
         <StaysPagination 

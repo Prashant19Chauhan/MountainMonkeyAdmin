@@ -47,3 +47,10 @@ export interface SEOFormData {
   lastModified: string;
   seoScore?: number;
 }
+
+export * from "./destination.types";
+export * from "./package.types";
+export * from "./stay.types";
+export * from "./activity.types";
+export * from "./localInfo.types";
+export * from "./city.types";

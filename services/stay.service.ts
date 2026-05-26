@@ -48,9 +48,9 @@ export const createStayApi = async(data: StayInputType) => {
     }
 }
 
-export const updateStayApi = async(id: string, data: StayInputType) => {
+export const updateStayApi = async(slug: string, data: StayInputType) => {
     try{
-        const response = await api.put(`/stay/${id}`, data)
+        const response = await api.put(`/stay/${slug}`, data)
         return response.data
     } catch(error){
         if(error instanceof AxiosError){
@@ -72,9 +72,9 @@ export const getAllStaysApi = async (page: number, limit: number, search?: strin
   }
 }
 
-export const getStayByIdApi = async (id: string) => {
+export const getStayByIdApi = async (slug: string) => {
   try {
-    const res = await api.get(`/stay/${id}`)
+    const res = await api.get(`/stay/${slug}`)
     return res.data
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -84,9 +84,9 @@ export const getStayByIdApi = async (id: string) => {
   }
 }
 
-export const deleteStayApi = async (id: string) => {
+export const deleteStayApi = async (slug: string) => {
     try {
-        const res = await api.delete(`/stay/${id}`)
+        const res = await api.delete(`/stay/${slug}`)
         return res.data
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -95,3 +95,15 @@ export const deleteStayApi = async (id: string) => {
         throw new Error("An unexpected error occurred while deleting stay.")
     }
 }
+
+export const updateStayCurrentPriceApi = async (slug: string, currentPrice: number) => {
+    try {
+        const response = await api.patch(`/stay/${slug}/current-price`, { currentPrice });
+        return response.data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            throw error;
+        }
+        throw new Error("An unexpected error occurred while updating current price.");
+    }
+};

@@ -74,27 +74,27 @@ export const createActivityApi = async (data: ActivityInput): Promise<SingleActi
     }
 }
 
-export const updateActivityApi = async (id: string, data: ActivityInput): Promise<SingleActivityResponse> => {
+export const updateActivityApi = async (slug: string, data: ActivityInput): Promise<SingleActivityResponse> => {
     try {
-        const response = await api.put(`/activity/${id}`, data)
+        const response = await api.put(`/activity/${slug}`, data)
         return response.data
     } catch (error) {
         return handleApiError(error);
     }
 }
 
-export const deleteActivityApi = async (id: string): Promise<{ success: boolean; message: string }> => {
+export const deleteActivityApi = async (slug: string): Promise<{ success: boolean; message: string }> => {
     try {
-        const response = await api.delete(`/activity/${id}`)
+        const response = await api.delete(`/activity/${slug}`)
         return response.data
     } catch (error) {
         return handleApiError(error);
     }
 }
 
-export const getActivityByIdApi = async (id: string): Promise<SingleActivityResponse> => {
+export const getActivityByIdApi = async (slug: string): Promise<SingleActivityResponse> => {
     try {
-        const response = await api.get(`/activity/${id}`)
+        const response = await api.get(`/activity/${slug}`)
         return response.data
     } catch (error) {
         return handleApiError(error);
@@ -110,6 +110,15 @@ export const getAllActivitiesApi = async (page: number, limit: number, search?: 
                 search: search || undefined
             }
         })
+        return response.data
+    } catch (error) {
+        return handleApiError(error);
+    }
+}
+
+export const updateActivityCurrentPriceApi = async (slug: string, currentPrice: number): Promise<SingleActivityResponse> => {
+    try {
+        const response = await api.patch(`/activity/${slug}/current-price`, { currentPrice })
         return response.data
     } catch (error) {
         return handleApiError(error);

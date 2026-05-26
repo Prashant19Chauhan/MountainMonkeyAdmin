@@ -1,7 +1,12 @@
 import React from 'react';
 import { Search, Filter } from 'lucide-react';
 
-export const PackagesFilter = ({ status, setStatus }: any) => {
+interface PackagesFilterProps {
+  status?: string;
+  setStatus: (status: string | undefined) => void;
+}
+
+export const PackagesFilter = ({ status, setStatus }: PackagesFilterProps) => {
   return (
     <div className="p-4 border-b border-slate-100 flex flex-wrap gap-4 items-center bg-white">
       <div className="relative flex-1 min-w-[300px]">

@@ -36,9 +36,9 @@ export const createPackageApi = async (formData: CreatePackageFormValues) => {
     }
 };
 
-export const getPackageApi = async (id: string) => {
+export const getPackageApi = async (slug: string) => {
     try {
-        const response = await api.get(`/packages/${id}`);
+        const response = await api.get(`/packages/${slug}`);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -48,9 +48,9 @@ export const getPackageApi = async (id: string) => {
     }
 };
 
-export const updatePackageApi = async (id: string, formData: Partial<CreatePackageFormValues>) => {
+export const updatePackageApi = async (slug: string, formData: Partial<CreatePackageFormValues>) => {
     try {
-        const response = await api.put(`/packages/${id}`, formData);
+        const response = await api.put(`/packages/${slug}`, formData);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -60,9 +60,21 @@ export const updatePackageApi = async (id: string, formData: Partial<CreatePacka
     }
 };
 
-export const deletePackageApi = async (id: string) => {
+export const deletePackageApi = async (slug: string) => {
     try {
-        const response = await api.delete(`/packages/${id}`);
+        const response = await api.delete(`/packages/${slug}`);
+        return response.data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            throw error.response?.data?.message || "Something went wrong";
+        }
+        throw "Something went wrong";
+    }
+};
+
+export const updatePackageCurrentPriceApi = async (slug: string, currentPrice: number) => {
+    try {
+        const response = await api.patch(`/packages/${slug}/current-price`, { currentPrice });
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {

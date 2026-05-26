@@ -22,6 +22,7 @@ const PackagesClient = () => {
     setPage,
     status,
     setStatus,
+    updatePackageCurrentPrice,
   } = usePackage();
 
   const packages = packagesData?.data || [];
@@ -99,6 +100,7 @@ const PackagesClient = () => {
           packages={packages} 
           isPackagesLoading={isPackagesLoading} 
           onDeleteClick={handleDeleteClick}
+          onUpdatePrice={(id: string, price: number) => updatePackageCurrentPrice({ id, price })}
         />
         
         <PackagesPagination 

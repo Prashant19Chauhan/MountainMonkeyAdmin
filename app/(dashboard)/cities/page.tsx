@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import AddCityDrawer from '../../../components/city/AddCityDrawer';
 import useCity from '@/hooks/useCity';
-import { CityInput } from '@/lib/validation/city.validation';
+import { City } from '@/types/type';
 import DeleteDialog from '../../../components/mainComponents/deleteDialog';
 import Link from 'next/link';
 
@@ -60,7 +60,7 @@ export default function CitiesPage() {
   const totalItems = citiesData?.meta?.total || 0;
   const totalPages = citiesData?.meta?.totalPages || 1;
 
-  const uniqueCountries = new Set(cities.map((c: CityInput) => c.country)).size;
+  const uniqueCountries = new Set(cities.map((c: City) => c.country)).size;
 
   return (
     <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8 font-sans">
@@ -148,7 +148,7 @@ export default function CitiesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {cities.length > 0 ? cities.map((city: CityInput) => (
+              {cities.length > 0 ? cities.map((city: City) => (
                 <tr key={city._id} className="group hover:bg-slate-50/50 transition-all">
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-5">
@@ -188,6 +188,12 @@ export default function CitiesPage() {
 
                   <td className="px-8 py-6">
                     <div className="flex items-center justify-end gap-1">
+                      <Link
+                        href={`/cities/${city._id}`}
+                        className="p-2.5 text-slate-300 hover:text-slate-900 hover:bg-white rounded-xl transition-all border border-transparent hover:border-slate-100"
+                      >
+                        <Eye size={18} />
+                      </Link>
                       <Link
                         href={`/metadata?city=${city._id}`}
                         className="p-2.5 text-slate-300 hover:text-slate-900 hover:bg-white rounded-xl transition-all border border-transparent hover:border-slate-100">

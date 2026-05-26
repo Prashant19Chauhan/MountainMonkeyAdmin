@@ -8,7 +8,8 @@ import {
     updateActivityApi, 
     deleteActivityApi, 
     getActivityByIdApi, 
-    getAllActivitiesApi 
+    getAllActivitiesApi,
+    updateActivityCurrentPriceApi
 } from "@/services/activities.service"
 import { getCitiesApi } from "@/services/city.service"
 import { getDestinationsApi } from "@/services/destination.service"
@@ -264,6 +265,17 @@ export default function useActivity() {
         }
     })
 
+    const { mutate: updateActivityCurrentPrice, isPending: isUpdatePriceLoading } = useMutation({
+        mutationFn: ({ id, price }: { id: string; price: number }) => updateActivityCurrentPriceApi(id, price),
+        onSuccess: () => {
+            toast.success("Activity price updated successfully")
+            queryClient.invalidateQueries({ queryKey: ["activities"] })
+        },
+        onError: (error: any) => {
+            toast.error(error.message || "Failed to update activity price")
+        }
+    })
+
     const resetForm = () => {
         setFormData(initialFormData)
         setEditActivityId(null)
@@ -309,6 +321,8 @@ export default function useActivity() {
         isSingleActivityLoading,
         createActivity,
         updateActivity,
+        updateActivityCurrentPrice,
+        isUpdatePriceLoading,
 
         editActivityId,
         setEditActivityId,

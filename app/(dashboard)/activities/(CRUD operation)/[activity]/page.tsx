@@ -1,3 +1,6 @@
-export default function ActivityDetailsPage() {
-    return <div>Activity Details Page</div>;
+import React from 'react';
+import ActivityDetail from '@/components/activities/detailPage/ActivityDetail';
+
+export default function ActivityDetailPage() {
+  return <ActivityDetail />;
 }

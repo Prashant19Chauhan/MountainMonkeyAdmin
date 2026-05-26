@@ -23,10 +23,11 @@ const ActivitiesClient = () => {
     setIsDeleteDialogOpen,
     confirmDelete,
     isDeleteLoading,
-    openDeleteDialog
+    openDeleteDialog,
+    updateActivityCurrentPrice,
   } = useActivity();
 
-  const activities = activitiesData?.data || [];
+  const activities = activitiesData?.data?.activities || [];
   const totalPages = activitiesData?.data?.totalPages || 0;
 
   const stats = [
@@ -82,6 +83,7 @@ const ActivitiesClient = () => {
           activities={activities} 
           isActivitiesLoading={isActivitiesLoading} 
           onDeleteClick={openDeleteDialog} 
+          onUpdatePrice={(id: string, price: number) => updateActivityCurrentPrice({ id, price })}
         />
         
         <ActivitiesPagination 

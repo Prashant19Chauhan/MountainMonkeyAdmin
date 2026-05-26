@@ -1,9 +1,6 @@
-import React from 'react'
+import React from 'react';
+import StayDetail from '@/components/stays/detailPage/StayDetail';
 
-function StayDetails() {
-  return (
-    <div>StayDetails</div>
-  )
+export default function StayDetailPage() {
+  return <StayDetail />;
 }
-
-export default StayDetails

@@ -98,7 +98,7 @@ export default function useDestination() {
     }, [singleDestinationData])
 
     const {mutate: updateDestination, isPending: isUpdateDestinationLoading, error: updateDestinationError} = useMutation({
-        mutationFn: updateDestinationApi,
+        mutationFn: (data: destinationInput) => updateDestinationApi(destinationId as string, data),
         onSuccess: () => {
             toast.success("Destination updated successfully");
             queryClient.invalidateQueries({queryKey: ["destinations"]});

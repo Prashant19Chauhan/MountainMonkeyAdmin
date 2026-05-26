@@ -1,7 +1,15 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export const DestinationsPagination = ({ page, setPage, totalPages, totalItems, itemsLength }: any) => {
+interface DestinationsPaginationProps {
+  page: number;
+  setPage: (page: number) => void;
+  totalPages: number;
+  totalItems: number;
+  itemsLength: number;
+}
+
+export const DestinationsPagination = ({ page, setPage, totalPages, totalItems, itemsLength }: DestinationsPaginationProps) => {
   return (
     <div className="p-4 md:p-5 border-t border-slate-50 bg-slate-50/30 flex flex-col sm:flex-row items-center justify-between gap-4">
       <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest italic order-2 sm:order-1">
