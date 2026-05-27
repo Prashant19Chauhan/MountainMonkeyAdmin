@@ -2,11 +2,17 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { EyeOff, Laptop, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Laptop, Loader2 } from 'lucide-react';
 import useAuth from '@/hooks/useAuth';
+import { useState } from 'react';
 
 export default function LoginPage() {
   const {formData, handleInputChange, handleSubmit, isLoginLoading, isLoginError, loginError} = useAuth();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  }
 
   return (
     <div className="flex min-h-screen w-full flex-col md:flex-row bg-[#0a0a0b] text-white">
@@ -81,11 +87,13 @@ export default function LoginPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   className="w-full rounded-xl border border-gray-800 bg-[#161618] px-4 py-3 pr-12 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 />
-                <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
-                  <EyeOff size={18} />
+                <button 
+                  onClick={handlePasswordVisibility}
+                  type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  { showPassword? <Eye size={18} /> : <EyeOff size={18} />}
                 </button>
               </div>
             </div>

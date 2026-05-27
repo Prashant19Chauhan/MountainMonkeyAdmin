@@ -6,6 +6,8 @@ import {useMutation} from "@tanstack/react-query";
 import { LoginApi } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
+import z from "zod";
+import { toast } from "react-toastify";
 
 
 export default function useAuth() {
@@ -16,7 +18,7 @@ export default function useAuth() {
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -43,11 +45,16 @@ export default function useAuth() {
     e.preventDefault();
     
     try{
+      formData.email = formData.email.trim().toLowerCase()
       const parsed = LoginSchema.parse(formData)
       login(parsed)
 
-    }catch(error){
-      throw error
+    }catch(error: any){
+      if(error instanceof z.ZodError){
+        toast.error(error?.issues[0]?.message)
+        return
+      }
+      toast.error(error?.message || "Something went wrong")
     }
   };
 
