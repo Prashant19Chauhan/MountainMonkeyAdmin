@@ -35,13 +35,14 @@ export default function AddCityDrawer({ isOpen, onClose, cityHook }: Props) {
     resolver: zodResolver(citySchema) as any,
     defaultValues: formData || {},
   });
+  const { reset, trigger } = methods;
 
   // Sync form values once backend data is loaded
   useEffect(() => {
     if (formData) {
-      methods.reset(formData);
+      reset(formData);
     }
-  }, [formData, methods]);
+  }, [formData, reset]);
 
   // Handle drawer close after successful mutation
   useEffect(() => {
@@ -50,6 +51,13 @@ export default function AddCityDrawer({ isOpen, onClose, cityHook }: Props) {
     }
   }, [isUpdateSuccess, onClose]);
 
+  // Reset step to 1 when the drawer closes (submitted or not)
+  useEffect(() => {
+    if (!isOpen) {
+      setActiveTab("basic");
+    }
+  }, [isOpen]);
+
   const editMode = !!formData?._id;
 
   const onSubmit = (data: CityInput) => {
@@ -57,6 +65,38 @@ export default function AddCityDrawer({ isOpen, onClose, cityHook }: Props) {
       cityHook.updateCity(data);
     } else {
       cityHook.createCity(data);
+    }
+  };
+
+  const handleTabClick = async (tabId: "basic" | "coordinates") => {
+    if (tabId === "coordinates" && activeTab === "basic") {
+      const isStep1Valid = await trigger([
+        "name",
+        "city",
+        "country",
+        "state",
+        "timezone",
+        "description",
+        "address"
+      ]);
+      if (!isStep1Valid) return;
+    }
+    setActiveTab(tabId);
+  };
+
+  const handleNextStep = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    const isStep1Valid = await trigger([
+      "name",
+      "city",
+      "country",
+      "state",
+      "timezone",
+      "description",
+      "address"
+    ]);
+    if (isStep1Valid) {
+      setActiveTab("coordinates");
     }
   };
 
@@ -69,7 +109,10 @@ export default function AddCityDrawer({ isOpen, onClose, cityHook }: Props) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={() => {
+              resetForm();
+              onClose();
+            }}
             className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm"
           />
 
@@ -93,7 +136,10 @@ export default function AddCityDrawer({ isOpen, onClose, cityHook }: Props) {
               </div>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={() => {
+                  resetForm()
+                  onClose()
+                }}
                 className="text-slate-300 hover:text-slate-600 p-1.5 md:p-2 hover:bg-slate-50 rounded-xl transition-all"
               >
                 <X size={20} className="md:w-6 md:h-6" />
@@ -110,7 +156,7 @@ export default function AddCityDrawer({ isOpen, onClose, cityHook }: Props) {
                   <button
                     key={tab.id}
                     type="button"
-                    onClick={() => setActiveTab(tab.id as "basic" | "coordinates")}
+                    onClick={() => handleTabClick(tab.id as "basic" | "coordinates")}
                     className={`flex items-center gap-2 px-4 md:px-6 py-3 md:py-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all border-b-2 whitespace-nowrap ${
                       activeTab === tab.id
                         ? "border-slate-900 text-slate-900 bg-white"
@@ -124,7 +170,12 @@ export default function AddCityDrawer({ isOpen, onClose, cityHook }: Props) {
 
               {/* Form */}
               <form
-                onSubmit={methods.handleSubmit(onSubmit)}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (activeTab === "coordinates") {
+                    methods.handleSubmit(onSubmit)(e);
+                  }
+                }}
                 className="flex flex-col flex-1 overflow-y-auto bg-white"
               >
                 <div className="p-5 md:p-8 space-y-6 md:space-y-8 pb-32">
@@ -145,34 +196,55 @@ export default function AddCityDrawer({ isOpen, onClose, cityHook }: Props) {
 
                 {/* Footer */}
                 <div className="border-t p-5 md:p-8 flex gap-3 bg-white sticky bottom-0 z-10">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      resetForm();
-                      methods.reset();
-                      onClose();
-                    }}
-                    className="flex-1 rounded-2xl border border-slate-200 bg-white py-3 md:py-4 font-black text-slate-500 hover:bg-slate-50 transition-all uppercase text-[9px] md:text-[10px] tracking-[0.2em]"
-                  >
-                    Discard
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex-2 rounded-2xl bg-slate-900 py-3 md:py-4 px-6 md:px-10 font-black text-white hover:bg-black transition-all disabled:opacity-60 flex items-center justify-center gap-2 md:gap-3 shadow-xl shadow-slate-900/10 uppercase text-[9px] md:text-[10px] tracking-[0.2em]"
-                  >
-                    {loading ? (
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    ) : (
-                      <Save size={14} />
-                    )}
-                    <span className="hidden xs:inline">
-                      {loading ? "Processing..." : editMode ? "Update Archive" : "Establish City"}
-                    </span>
-                    <span className="xs:hidden">
-                      {loading ? "Wait..." : editMode ? "Update" : "Establish"}
-                    </span>
-                  </button>
+                  {activeTab === "basic" ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          resetForm();
+                          methods.reset();
+                          onClose();
+                        }}
+                        className="flex-1 rounded-2xl border border-slate-200 bg-white py-3 md:py-4 font-black text-slate-500 hover:bg-slate-50 transition-all uppercase text-[9px] md:text-[10px] tracking-[0.2em]"
+                      >
+                        Discard
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => handleNextStep(e)}
+                        className="flex-2 rounded-2xl bg-slate-900 py-3 md:py-4 px-6 md:px-10 font-black text-white hover:bg-black transition-all flex items-center justify-center gap-2 md:gap-3 shadow-xl shadow-slate-900/10 uppercase text-[9px] md:text-[10px] tracking-[0.2em]"
+                      >
+                        Next
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("basic")}
+                        className="flex-1 rounded-2xl border border-slate-200 bg-white py-3 md:py-4 font-black text-slate-500 hover:bg-slate-50 transition-all uppercase text-[9px] md:text-[10px] tracking-[0.2em]"
+                      >
+                        Back
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="flex-2 rounded-2xl bg-slate-900 py-3 md:py-4 px-6 md:px-10 font-black text-white hover:bg-black transition-all disabled:opacity-60 flex items-center justify-center gap-2 md:gap-3 shadow-xl shadow-slate-900/10 uppercase text-[9px] md:text-[10px] tracking-[0.2em]"
+                      >
+                        {loading ? (
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <Save size={14} />
+                        )}
+                        <span className="hidden xs:inline">
+                          {loading ? "Processing..." : editMode ? "Update Archive" : "Establish City"}
+                        </span>
+                        <span className="xs:hidden">
+                          {loading ? "Wait..." : editMode ? "Update" : "Establish"}
+                        </span>
+                      </button>
+                    </>
+                  )}
                 </div>
               </form>
             </FormProvider>

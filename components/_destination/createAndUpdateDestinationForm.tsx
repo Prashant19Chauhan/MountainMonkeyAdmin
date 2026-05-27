@@ -62,6 +62,7 @@ export default function CreateDestination({
     resolver: zodResolver(destinationSchema),
     defaultValues: formData || {},
   });
+  const { reset } = methods;
 
   // Sync form values once backend data is loaded/updated
   useEffect(() => {
@@ -71,9 +72,9 @@ export default function CreateDestination({
       if (doc.mainCity && typeof doc.mainCity === "object") {
         doc.mainCity = (doc.mainCity as any)._id || "";
       }
-      methods.reset(doc);
+      reset(doc);
     }
-  }, [formData, methods]);
+  }, [formData, reset]);
 
   const onSubmit = (data: destinationInput) => {
     if (isUpdate) {

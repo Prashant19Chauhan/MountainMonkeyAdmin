@@ -63,13 +63,14 @@ export default function PackageForm({
     resolver: zodResolver(createPackageSchema) as any,
     defaultValues: formData || {},
   });
+  const { reset } = methods;
 
   // Sync form values when hook data changes
   useEffect(() => {
     if (formData) {
-      methods.reset(formData);
+      reset(formData);
     }
-  }, [formData, methods]);
+  }, [formData, reset]);
 
   const extractId = (val: any) => {
     if (!val) return "";

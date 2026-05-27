@@ -60,13 +60,14 @@ export default function AddStayDrawer({
     resolver: zodResolver(staySchemaValidation),
     defaultValues: formData || {},
   });
+  const { reset } = methods;
 
   // Sync form values once backend data is loaded/updated
   useEffect(() => {
     if (formData) {
-      methods.reset(formData);
+      reset(formData);
     }
-  }, [formData, methods]);
+  }, [formData, reset]);
 
   const onSubmit = (data: StayInputType) => {
     if (editId) {

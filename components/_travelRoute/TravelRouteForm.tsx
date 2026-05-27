@@ -44,6 +44,7 @@ export default function TravelRouteForm({
     resolver: zodResolver(travelRouteSchema),
     defaultValues: formData || {},
   });
+  const { reset } = methods;
 
   const { fields, append, remove } = useFieldArray({
     control: methods.control,
@@ -53,9 +54,9 @@ export default function TravelRouteForm({
   // Sync form values once backend data is loaded/updated
   useEffect(() => {
     if (formData) {
-      methods.reset(formData);
+      reset(formData);
     }
-  }, [formData, methods]);
+  }, [formData, reset]);
 
   if (isUpdateSuccess) {
     router.push('/travel-routes');

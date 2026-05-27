@@ -45,13 +45,14 @@ export default function AddActivityDrawer({
     resolver: zodResolver(activityValidationSchema) as any,
     defaultValues: formData || {},
   });
+  const { reset } = methods;
 
   // Sync form values once backend data is loaded/updated
   useEffect(() => {
     if (formData) {
-      methods.reset(formData);
+      reset(formData);
     }
-  }, [formData, methods]);
+  }, [formData, reset]);
 
   const onSubmit = (data: ActivityInput) => {
     if (editActivityId) {

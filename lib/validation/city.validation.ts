@@ -34,7 +34,7 @@ export const citySchema = z.object({
       .array(
         z.number({ message: "Coordinate must be a numeric value" })
       )
-      .length(2, "Coordinates must consist of exactly two values [longitude, latitude]"),
+      .length(2, "Coordinates must consist of exactly two values [longitude, latitude]")
   }),
   
   altitude: z

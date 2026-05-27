@@ -43,7 +43,7 @@ export default function useCity() {
         queryFn: () => getCitiesApi(page, limit, search)
     })
     
-    const { mutate: createCity, isPending: isCreateCityLoading, error: createCityError, isSuccess: isCreateCitySuccess } = useMutation({
+    const { mutate: createCity, isPending: isCreateCityLoading, error: createCityError, isSuccess: isCreateCitySuccess, reset: resetCreate } = useMutation({
         mutationFn: createCityApi,
         onSuccess: () => {
             resetForm();
@@ -77,7 +77,7 @@ export default function useCity() {
         }
     }, [singleCityData])
 
-    const { mutate: updateCity, isPending: isUpdateCityLoading, error: updateCityError, isSuccess: isUpdateCitySuccess } = useMutation({
+    const { mutate: updateCity, isPending: isUpdateCityLoading, error: updateCityError, isSuccess: isUpdateCitySuccess, reset: resetUpdate } = useMutation({
         mutationFn: updateCityApi,
         onSuccess: () => {
             toast.success("City updated successfully");
@@ -163,9 +163,11 @@ export default function useCity() {
             altitude: 0,
             timezone: '',
             description: '',
-            status: 'active'
+            status: 'Active'
         });
         setEditCityId(null);
+        resetCreate();
+        resetUpdate();
     }
 
     return {

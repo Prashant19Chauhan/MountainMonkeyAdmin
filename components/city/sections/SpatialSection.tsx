@@ -41,6 +41,11 @@ export default function SpatialSection() {
                 {...register("locationCoordinates.coordinates.0", { valueAsNumber: true })}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm font-black outline-none focus:bg-white/10 transition-all text-white"
               />
+              {locErrors?.message && (
+                <p className="text-rose-400 text-xs font-semibold mt-1">
+                  {String(locErrors.message)}
+                </p>
+              )}
               {locErrors?.coordinates?.[0]?.message && (
                 <p className="text-rose-400 text-xs font-semibold mt-1">
                   {String(locErrors.coordinates[0].message)}

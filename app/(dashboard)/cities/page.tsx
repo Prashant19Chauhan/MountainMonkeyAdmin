@@ -283,7 +283,7 @@ export default function CitiesPage() {
         isOpen={isDrawerOpen}
         onClose={() => {
           setIsDrawerOpen(false)
-          setEditCityId(null)
+          cityHook.resetForm()
         }}
         cityHook={cityHook}
       />
