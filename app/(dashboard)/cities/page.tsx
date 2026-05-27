@@ -83,7 +83,7 @@ export default function CitiesPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <StatCard
           title="Total Cities"
           value={totalItems.toString()}
@@ -101,12 +101,6 @@ export default function CitiesPage() {
           value={uniqueCountries.toString()}
           trend="Territories"
           icon={<MapPin className="text-indigo-500" size={20} />}
-        />
-        <StatCard
-          title="Avg. Altitude"
-          value="1,240m"
-          trend="Mountain Peaks"
-          icon={<Clock className="text-amber-500" size={20} />}
         />
       </div>
 

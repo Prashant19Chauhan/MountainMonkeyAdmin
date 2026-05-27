@@ -100,7 +100,7 @@ export default function LoginPage() {
 
             <button 
               disabled={isLoginLoading}
-              className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 transition-colors shadow-lg shadow-blue-900/20">
+              className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white flex justify-center items-center gap-2 hover:bg-blue-700 transition-colors shadow-lg shadow-blue-900/20">
               {isLoginLoading ? <Loader2 size={18} className="animate-spin" /> : "Sign in with Email"}
             </button>
           </form>
