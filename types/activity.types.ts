@@ -13,6 +13,7 @@ export interface ActivityPricing {
   isFree?: boolean;
 }
 
+
 export interface ActivityAgeLimit {
   min?: number;
   max?: number;
