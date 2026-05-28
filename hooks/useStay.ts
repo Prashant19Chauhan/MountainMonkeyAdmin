@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
-    createStayApi, 
-    updateStayApi, 
-    deleteStayApi, 
-    getStayByIdApi, 
+import {
+    createStayApi,
+    updateStayApi,
+    deleteStayApi,
+    getStayByIdApi,
     getAllStaysApi,
     updateStayCurrentPriceApi
 } from "@/services/stay.service";
@@ -34,7 +34,7 @@ const initialFormData: StayInputType = {
             capacity: 2,
             amenities: [],
             availability: { totalRooms: 10, availableRooms: 10 },
-            roomImages:[]
+            roomImages: []
         }
     ],
     images: [],

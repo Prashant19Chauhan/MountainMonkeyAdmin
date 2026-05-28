@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { Calendar, Navigation, Utensils, Plus, Trash2 } from "lucide-react";
+import { PKG_TRANSPORT_OPTIONS, PKG_MEALS_OPTIONS } from "@/lib/validation/package.validation";
 
 export default function ItineraryLogisticsTab() {
   const {
@@ -30,9 +31,6 @@ export default function ItineraryLogisticsTab() {
   const transportModes: string[] = watch("transport.modes") || [];
   const mealsPlan: string[] = watch("meals.plan") || [];
 
-  const [modesText, setModesText] = useState("");
-  const [mealsText, setMealsText] = useState("");
-
   // Auto-update nights when days changes
   useEffect(() => {
     if (days) {
@@ -40,33 +38,18 @@ export default function ItineraryLogisticsTab() {
     }
   }, [days, setValue]);
 
-  // Sync initial string arrays
-  useEffect(() => {
-    if (transportModes.length > 0 && !modesText) {
-      setModesText(transportModes.join(", "));
-    }
-  }, [transportModes]);
-
-  useEffect(() => {
-    if (mealsPlan.length > 0 && !mealsText) {
-      setMealsText(mealsPlan.join(", "));
-    }
-  }, [mealsPlan]);
-
-  const handleModesBlur = () => {
-    const arr = modesText
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-    setValue("transport.modes", arr, { shouldValidate: true });
+  const toggleTransportMode = (mode: string) => {
+    const next = transportModes.includes(mode)
+      ? transportModes.filter((m) => m !== mode)
+      : [...transportModes, mode];
+    setValue("transport.modes", next, { shouldValidate: true });
   };
 
-  const handleMealsBlur = () => {
-    const arr = mealsText
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-    setValue("meals.plan", arr, { shouldValidate: true });
+  const toggleMealPlan = (plan: string) => {
+    const next = mealsPlan.includes(plan)
+      ? mealsPlan.filter((p) => p !== plan)
+      : [...mealsPlan, plan];
+    setValue("meals.plan", next, { shouldValidate: true });
   };
 
   const addDay = () => {
@@ -130,34 +113,42 @@ export default function ItineraryLogisticsTab() {
       </div>
 
       {/* Transport & Meals */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Transport */}
-        <div className="space-y-4">
-          <h3 className="text-xs font-black uppercase tracking-wider text-slate-600 flex items-center gap-2">
-            <Navigation size={14} className="text-blue-500" /> Transport
+        <div className="space-y-4 bg-slate-50 p-6 border border-slate-200 rounded-3xl text-left">
+          <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 flex items-center gap-2">
+            <Navigation size={16} className="text-blue-500" /> Transit & Transport
           </h3>
-          <label className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors">
+          <label className="flex items-center gap-3 p-3.5 bg-white rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100/50 transition-colors">
             <input
               type="checkbox"
               {...register("transport.included")}
               className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-600"
             />
-            <span className="text-sm font-semibold text-slate-700 select-none">Transport Included</span>
+            <span className="text-xs font-black uppercase tracking-wider text-slate-600 select-none">Transport Included</span>
           </label>
 
           {isTransportIncluded && (
             <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase text-slate-500">
-                Modes (comma separated) <span className="text-red-500">*</span>
+              <label className="text-[10px] font-black uppercase text-slate-400">
+                Transit Modes <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
-                value={modesText}
-                onChange={(e) => setModesText(e.target.value)}
-                onBlur={handleModesBlur}
-                placeholder="Flight, Private Car, Bus..."
-                className="w-full px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-gray-800"
-              />
+              <div className="flex flex-wrap gap-2 p-3 bg-white border border-slate-200 rounded-2xl">
+                {PKG_TRANSPORT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => toggleTransportMode(opt.value)}
+                    className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all duration-300 ${
+                      transportModes.includes(opt.value)
+                        ? "bg-blue-900 text-white border-blue-900 shadow-sm"
+                        : "bg-blue-50/50 text-blue-400 border-slate-100 hover:bg-slate-100"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
               {transportErrors?.modes?.message && (
                 <p className="text-red-500 text-xs font-semibold mt-1">
                   {String(transportErrors.modes.message)}
@@ -168,30 +159,38 @@ export default function ItineraryLogisticsTab() {
         </div>
 
         {/* Meals */}
-        <div className="space-y-4">
-          <h3 className="text-xs font-black uppercase tracking-wider text-slate-600 flex items-center gap-2">
-            <Utensils size={14} className="text-orange-500" /> Meals
+        <div className="space-y-4 bg-slate-50 p-6 border border-slate-200 rounded-3xl text-left">
+          <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 flex items-center gap-2">
+            <Utensils size={16} className="text-orange-500" /> Dining & Meals
           </h3>
-          <label className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors">
+          <label className="flex items-center gap-3 p-3.5 bg-white rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100/50 transition-colors">
             <input
               type="checkbox"
               {...register("meals.included")}
               className="w-4 h-4 text-orange-600 rounded border-slate-300 focus:ring-orange-600"
             />
-            <span className="text-sm font-semibold text-slate-700 select-none">Meals Included</span>
+            <span className="text-xs font-black uppercase tracking-wider text-slate-600 select-none">Meals Included</span>
           </label>
 
           {isMealsIncluded && (
             <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase text-slate-500">Meal Plan (comma separated)</label>
-              <input
-                type="text"
-                value={mealsText}
-                onChange={(e) => setMealsText(e.target.value)}
-                onBlur={handleMealsBlur}
-                placeholder="Breakfast, Dinner..."
-                className="w-full px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-gray-800"
-              />
+              <label className="text-[10px] font-black uppercase text-slate-400">Meal Plan Options</label>
+              <div className="flex flex-wrap gap-2 p-3 bg-white border border-slate-200 rounded-2xl">
+                {PKG_MEALS_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => toggleMealPlan(opt.value)}
+                    className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all duration-300 ${
+                      mealsPlan.includes(opt.value)
+                        ? "bg-orange-950 text-white border-orange-950 shadow-sm"
+                        : "bg-orange-50/50 text-orange-400 border-slate-100 hover:bg-slate-100"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
               {mealsErrors?.plan?.message && (
                 <p className="text-red-500 text-xs font-semibold mt-1">
                   {String(mealsErrors.plan.message)}
@@ -205,15 +204,18 @@ export default function ItineraryLogisticsTab() {
       <div className="h-px bg-slate-100"></div>
 
       {/* Itinerary Dynamic Fields */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-sm font-black uppercase tracking-wider text-slate-800">
-            Day-by-Day Itinerary <span className="text-red-500">*</span>
-          </h3>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center bg-slate-50/50 p-4 border border-slate-200 rounded-2xl">
+          <div>
+            <h3 className="text-sm font-black uppercase tracking-wider text-slate-800">
+              Day-by-Day Itinerary <span className="text-red-500">*</span>
+            </h3>
+            <p className="text-[10px] text-slate-500 mt-0.5">Define experiential itineraries</p>
+          </div>
           <button
             type="button"
             onClick={addDay}
-            className="flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-lg hover:bg-emerald-100 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-100 text-emerald-700 text-xs font-black uppercase tracking-wider rounded-xl hover:bg-emerald-200 transition-colors shadow-sm"
           >
             <Plus size={14} /> Add Day
           </button>
@@ -223,10 +225,10 @@ export default function ItineraryLogisticsTab() {
           <p className="text-red-500 text-xs font-semibold">{String(errors.itinerary.message)}</p>
         )}
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {fields.length === 0 ? (
-            <div className="p-8 border-2 border-dashed border-slate-200 rounded-2xl text-center text-slate-400 text-sm font-medium">
-              No itinerary days added yet. Click "Add Day".
+            <div className="p-12 border-2 border-dashed border-slate-200 rounded-3xl text-center text-slate-400 text-sm font-bold">
+              No itinerary days added yet. Click "Add Day" to begin.
             </div>
           ) : (
             fields.map((field, idx) => {
@@ -235,25 +237,25 @@ export default function ItineraryLogisticsTab() {
               return (
                 <div
                   key={field.id}
-                  className="p-5 border-2 border-slate-200 rounded-2xl bg-white space-y-4 relative group"
+                  className="p-6 border border-slate-200 rounded-3xl bg-slate-50/30 space-y-4 relative group hover:border-slate-300 transition-all duration-300 text-left shadow-sm"
                 >
                   <button
                     type="button"
                     onClick={() => removeDay(idx)}
-                    className="absolute top-4 right-4 p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                    className="absolute top-6 right-6 p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
                   >
                     <Trash2 size={16} />
                   </button>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-black flex items-center justify-center text-sm">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-sm shadow-md shrink-0">
                       {idx + 1}
                     </div>
                     <div className="flex-1">
                       <input
                         type="text"
-                        placeholder={`Day ${idx + 1} Title`}
+                        placeholder={`Day ${idx + 1} Title (e.g., Arrival & Welcome Dinner)`}
                         {...register(`itinerary.${idx}.title` as const)}
-                        className="w-full px-4 py-2 border-b-2 border-transparent hover:border-slate-200 focus:border-emerald-500 outline-none text-base font-bold bg-transparent transition-colors text-gray-800"
+                        className="w-full px-4 py-2 border-b border-slate-200 hover:border-slate-300 focus:border-emerald-500 outline-none text-base font-black bg-transparent transition-colors text-gray-800"
                       />
                       {rowErrors?.title?.message && (
                         <p className="text-red-500 text-xs font-semibold mt-1">
@@ -264,10 +266,10 @@ export default function ItineraryLogisticsTab() {
                   </div>
                   <div className="space-y-1">
                     <textarea
-                      rows={2}
-                      placeholder="Describe the day's activities..."
+                      rows={3}
+                      placeholder="Describe the day's experience, sightseeings, timings, and other details..."
                       {...register(`itinerary.${idx}.description` as const)}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm text-gray-800"
+                      className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm font-semibold text-gray-800 shadow-inner resize-none leading-relaxed"
                     />
                     {rowErrors?.description?.message && (
                       <p className="text-red-500 text-xs font-semibold mt-1">

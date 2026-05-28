@@ -3,6 +3,7 @@
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { Tag } from "lucide-react";
+import { PLACE_TYPE_OPTIONS, DEST_CATEGORY_OPTIONS } from "@/lib/validation/destination.validation";
 
 const FieldHeader = ({ title, subtitle, icon }: { title: string; subtitle: string; icon: React.ReactNode }) => (
   <div className="mb-10 flex items-start gap-6">
@@ -59,18 +60,18 @@ export default function ClassificationSection() {
         <div>
           <FormLabel required>Primary Typology</FormLabel>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {['City', 'Town', 'Village', 'National Park', 'Historical Site', 'Beach', 'Mountain Peak', 'Valley'].map((type) => (
+            {PLACE_TYPE_OPTIONS.map((opt) => (
               <button
-                key={type}
+                key={opt.value}
                 type="button"
-                onClick={() => handlePlaceTypeClick(type)}
+                onClick={() => handlePlaceTypeClick(opt.value)}
                 className={`px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all duration-300 ${
-                  placeType === type
+                  placeType === opt.value
                     ? 'bg-slate-900 text-white border-slate-900 shadow-lg'
                     : 'bg-white text-slate-500 border-slate-100 hover:bg-slate-50'
                 }`}
               >
-                {type}
+                {opt.label}
               </button>
             ))}
           </div>
@@ -83,18 +84,18 @@ export default function ClassificationSection() {
         <div>
           <FormLabel hint="Multi-selection enabled">Travel Genres</FormLabel>
           <div className="flex flex-wrap gap-2">
-            {['Adventure', 'Pilgrimage', 'Nature', 'Luxury', 'Trekking', 'Honeymoon', 'Historical', 'Beach', 'Offbeat'].map((cat) => (
+            {DEST_CATEGORY_OPTIONS.map((opt) => (
               <button
-                key={cat}
+                key={opt.value}
                 type="button"
                 className={`px-5 py-2.5 rounded-xl text-xs font-bold border transition-all duration-300 ${
-                  categories.includes(cat)
+                  categories.includes(opt.value)
                     ? 'bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm'
                     : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
                 }`}
-                onClick={() => handleCategoryClick(cat)}
+                onClick={() => handleCategoryClick(opt.value)}
               >
-                {cat}
+                {opt.label}
               </button>
             ))}
           </div>

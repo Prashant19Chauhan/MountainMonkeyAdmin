@@ -23,7 +23,7 @@ export default function useCity() {
         address: '',
         locationCoordinates: {
             type: 'Point',
-            coordinates: [0, 0],
+            coordinates:  [null, null] as unknown as [number, number],
         },
         altitude: 0,
         timezone: '',

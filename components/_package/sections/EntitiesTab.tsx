@@ -68,19 +68,20 @@ export default function EntitiesTab({ activities, accommodationsList }: Entities
           <p className="text-red-500 text-xs font-semibold">{String(errors.activities.message)}</p>
         )}
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {activityFields.map((field, idx) => {
             const activitiesErrors = errors.activities as any;
             const rowErrors = activitiesErrors?.[idx];
             return (
               <div
                 key={field.id}
-                className="flex flex-wrap md:flex-nowrap items-center gap-3 p-4 border border-slate-200 rounded-xl bg-white"
+                className="flex flex-wrap lg:flex-nowrap items-center gap-4 p-5 border border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-white hover:border-slate-300 transition-all shadow-sm"
               >
-                <div className="flex-1 min-w-[200px]">
+                <div className="flex-1 min-w-[240px]">
+                  <label className="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-1.5 ml-1">Select Activity</label>
                   <select
                     {...register(`activities.${idx}.id` as const)}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm font-semibold outline-none focus:border-indigo-500 text-gray-800 bg-white"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:border-indigo-500 text-gray-800 bg-white"
                   >
                     <option value="">Select Activity...</option>
                     {activities.map((a: any) => (
@@ -96,15 +97,16 @@ export default function EntitiesTab({ activities, accommodationsList }: Entities
                   )}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 shrink-0">
                   <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-0.5 ml-1">Min Cost</label>
                     <input
                       type="number"
                       placeholder="Min Cost"
                       {...register(`activities.${idx}.priceRangeForPackage.min` as const, {
                         valueAsNumber: true,
                       })}
-                      className="w-24 px-3 py-2 border border-slate-200 rounded-lg text-sm font-semibold text-gray-800"
+                      className="w-28 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-gray-800 animate-in fade-in"
                     />
                     {rowErrors?.priceRangeForPackage?.min?.message && (
                       <p className="text-red-500 text-[10px] font-semibold">
@@ -112,15 +114,16 @@ export default function EntitiesTab({ activities, accommodationsList }: Entities
                       </p>
                     )}
                   </div>
-                  <span className="text-slate-400">-</span>
+                  <span className="text-slate-400 mt-4">-</span>
                   <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-0.5 ml-1">Max Cost</label>
                     <input
                       type="number"
                       placeholder="Max Cost"
                       {...register(`activities.${idx}.priceRangeForPackage.max` as const, {
                         valueAsNumber: true,
                       })}
-                      className="w-24 px-3 py-2 border border-slate-200 rounded-lg text-sm font-semibold text-gray-800"
+                      className="w-28 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-gray-800"
                     />
                     {rowErrors?.priceRangeForPackage?.max?.message && (
                       <p className="text-red-500 text-[10px] font-semibold">
@@ -133,9 +136,9 @@ export default function EntitiesTab({ activities, accommodationsList }: Entities
                 <button
                   type="button"
                   onClick={() => removeActivity(idx)}
-                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                  className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all self-end mb-0.5 lg:self-center"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={18} />
                 </button>
               </div>
             );
@@ -157,7 +160,7 @@ export default function EntitiesTab({ activities, accommodationsList }: Entities
           <button
             type="button"
             onClick={() => appendAccommodation({ stayId: "", priceRangeForPackage: { min: 0, max: 0 } })}
-            className="flex items-center gap-1 px-3 py-1.5 bg-rose-100 text-rose-700 text-xs font-bold rounded-lg hover:bg-rose-200 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 bg-rose-100 text-rose-700 text-xs font-black uppercase tracking-wider rounded-xl hover:bg-rose-200 transition-colors shadow-sm"
           >
             <Plus size={14} /> Add Stay
           </button>
@@ -167,19 +170,20 @@ export default function EntitiesTab({ activities, accommodationsList }: Entities
           <p className="text-red-500 text-xs font-semibold">{String(errors.accommodations.message)}</p>
         )}
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {accommodationFields.map((field, idx) => {
             const accommodationsErrors = errors.accommodations as any;
             const rowErrors = accommodationsErrors?.[idx];
             return (
               <div
                 key={field.id}
-                className="flex flex-wrap md:flex-nowrap items-center gap-3 p-4 border border-slate-200 rounded-xl bg-white"
+                className="flex flex-wrap lg:flex-nowrap items-center gap-4 p-5 border border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-white hover:border-slate-300 transition-all shadow-sm"
               >
-                <div className="flex-1 min-w-[200px]">
+                <div className="flex-1 min-w-[240px]">
+                  <label className="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-1.5 ml-1">Select Accommodation</label>
                   <select
                     {...register(`accommodations.${idx}.stayId` as const)}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm font-semibold outline-none focus:border-rose-500 text-gray-800 bg-white"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:border-rose-500 text-gray-800 bg-white"
                   >
                     <option value="">Select Accommodation...</option>
                     {accommodationsList.map((a: any) => (
@@ -195,15 +199,16 @@ export default function EntitiesTab({ activities, accommodationsList }: Entities
                   )}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 shrink-0">
                   <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-0.5 ml-1">Min Cost</label>
                     <input
                       type="number"
                       placeholder="Min Cost"
                       {...register(`accommodations.${idx}.priceRangeForPackage.min` as const, {
                         valueAsNumber: true,
                       })}
-                      className="w-24 px-3 py-2 border border-slate-200 rounded-lg text-sm font-semibold text-gray-800"
+                      className="w-28 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-gray-800"
                     />
                     {rowErrors?.priceRangeForPackage?.min?.message && (
                       <p className="text-red-500 text-[10px] font-semibold">
@@ -211,15 +216,16 @@ export default function EntitiesTab({ activities, accommodationsList }: Entities
                       </p>
                     )}
                   </div>
-                  <span className="text-slate-400">-</span>
+                  <span className="text-slate-400 mt-4">-</span>
                   <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-0.5 ml-1">Max Cost</label>
                     <input
                       type="number"
                       placeholder="Max Cost"
                       {...register(`accommodations.${idx}.priceRangeForPackage.max` as const, {
                         valueAsNumber: true,
                       })}
-                      className="w-24 px-3 py-2 border border-slate-200 rounded-lg text-sm font-semibold text-gray-800"
+                      className="w-28 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-gray-800"
                     />
                     {rowErrors?.priceRangeForPackage?.max?.message && (
                       <p className="text-red-500 text-[10px] font-semibold">
@@ -232,9 +238,9 @@ export default function EntitiesTab({ activities, accommodationsList }: Entities
                 <button
                   type="button"
                   onClick={() => removeAccommodation(idx)}
-                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                  className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all self-end mb-0.5 lg:self-center"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={18} />
                 </button>
               </div>
             );

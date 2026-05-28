@@ -161,52 +161,38 @@ export default function PackageForm({
           </div>
         </header>
 
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-          <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-            {/* Tabs Navigation Sidebar */}
-            <div className="xl:col-span-1">
-              <div className="bg-white rounded-3xl p-4 border border-slate-200/60 shadow-lg shadow-slate-900/5 sticky top-32 text-left">
-                <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-4 px-2">
-                  Configuration Steps
-                </h3>
-                <nav className="space-y-1">
-                  {tabs.map((tab, idx) => (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      onClick={() => setActiveTab(idx)}
-                      className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all duration-200 ${
-                        activeTab === idx
-                          ? "bg-blue-50 text-blue-700 shadow-sm shadow-blue-500/10"
-                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                      }`}
-                    >
-                      <span className={`${activeTab === idx ? "text-blue-600" : "text-slate-400"}`}>
-                        {tab.icon}
-                      </span>
-                      {tab.label}
-                    </button>
-                  ))}
-                </nav>
-              </div>
-            </div>
-
-            {/* Form Content Area */}
-            <div className="xl:col-span-3">
-              <form
-                onSubmit={methods.handleSubmit(onSubmit)}
-                className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/60 shadow-lg shadow-slate-900/5 min-h-[600px]"
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-6">
+          {/* Navigation Tabs at the Top */}
+          <div className="flex bg-white border border-slate-200/60 rounded-3xl p-2.5 overflow-x-auto no-scrollbar whitespace-nowrap shadow-md shadow-slate-900/5">
+            {tabs.map((tab, idx) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(idx)}
+                className={`flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 shrink-0 ${
+                  activeTab === idx
+                    ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20"
+                    : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+                }`}
               >
-                {activeTab === 0 && <BasicInfoTab destinations={destinations} />}
-                {activeTab === 1 && <ItineraryLogisticsTab />}
-                {activeTab === 2 && (
-                  <EntitiesTab activities={activities} accommodationsList={accommodationsList} />
-                )}
-                {activeTab === 3 && <PricingLimitsTab />}
-                {activeTab === 4 && <MediaMetadataTab />}
-              </form>
-            </div>
+                {tab.icon} {tab.label}
+              </button>
+            ))}
           </div>
+
+          {/* Form Content Area taking full width */}
+          <form
+            onSubmit={methods.handleSubmit(onSubmit)}
+            className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200/60 shadow-lg shadow-slate-900/5 min-h-[600px]"
+          >
+            {activeTab === 0 && <BasicInfoTab destinations={destinations} />}
+            {activeTab === 1 && <ItineraryLogisticsTab />}
+            {activeTab === 2 && (
+              <EntitiesTab activities={activities} accommodationsList={accommodationsList} />
+            )}
+            {activeTab === 3 && <PricingLimitsTab />}
+            {activeTab === 4 && <MediaMetadataTab />}
+          </form>
         </div>
       </div>
     </FormProvider>

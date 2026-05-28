@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { Trash2 } from "lucide-react";
+import { STAY_AMENITIES_OPTIONS } from "@/lib/validation/stay.validation";
 
 export default function AmenitiesTab() {
   const {
@@ -19,21 +20,13 @@ export default function AmenitiesTab() {
   });
 
   const amenities: string[] = watch("amenities") || [];
-  const [amenitiesText, setAmenitiesText] = useState("");
 
-  // Sync initial string arrays
-  useEffect(() => {
-    if (amenities.length > 0 && !amenitiesText) {
-      setAmenitiesText(amenities.join(", "));
+  const handleAmenityChange = (amenity: string, checked: boolean) => {
+    if (checked) {
+      setValue("amenities", [...amenities, amenity], { shouldValidate: true });
+    } else {
+      setValue("amenities", amenities.filter((a) => a !== amenity), { shouldValidate: true });
     }
-  }, [amenities]);
-
-  const handleAmenitiesBlur = () => {
-    const arr = amenitiesText
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-    setValue("amenities", arr, { shouldValidate: true });
   };
 
   return (
@@ -43,31 +36,29 @@ export default function AmenitiesTab() {
         <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100 pb-2">
           Global Property Amenities
         </h3>
-        <div className="space-y-1.5">
+        <div className="space-y-3">
           <label className="text-sm font-bold text-slate-700">
-            Enter amenities separated by commas
+            Select Amenities
           </label>
-          <textarea
-            placeholder="e.g. Free WiFi, Swimming Pool, Parking, Room Service, Gym"
-            value={amenitiesText}
-            onChange={(e) => setAmenitiesText(e.target.value)}
-            onBlur={handleAmenitiesBlur}
-            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:ring-2 focus:ring-slate-200 transition-all text-sm font-medium text-gray-800 resize-none"
-            rows={3}
-          />
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+            {STAY_AMENITIES_OPTIONS.map((opt) => (
+              <label
+                key={opt.value}
+                className="flex items-center gap-2.5 p-2 bg-white border border-slate-100 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors shadow-sm"
+              >
+                <input
+                  type="checkbox"
+                  checked={amenities.includes(opt.value)}
+                  onChange={(e) => handleAmenityChange(opt.value, e.target.checked)}
+                  className="rounded text-purple-600 focus:ring-purple-600"
+                />
+                <span className="text-xs font-bold text-slate-700 select-none">{opt.label}</span>
+              </label>
+            ))}
+          </div>
           {errors.amenities?.message && (
             <p className="text-red-500 text-xs font-semibold mt-1">{String(errors.amenities.message)}</p>
           )}
-          <div className="flex flex-wrap gap-2 mt-2">
-            {amenities.map((item: string) => (
-              <span
-                key={item}
-                className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-bold border border-slate-200"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
 

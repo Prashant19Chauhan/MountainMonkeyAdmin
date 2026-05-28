@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useFormContext } from "react-hook-form";
-import { ActivityInput } from "@/lib/validation/activity.validation";
-import { Plus, X, ChevronDown } from "lucide-react";
+import { ActivityInput, TIME_SLOT_OPTIONS } from "@/lib/validation/activity.validation";
+import { ChevronDown } from "lucide-react";
 
 export default function TimingSection() {
   const {
@@ -13,18 +13,13 @@ export default function TimingSection() {
     formState: { errors },
   } = useFormContext<ActivityInput>();
 
-  const [timeSlotInput, setTimeSlotInput] = useState<"morning" | "afternoon" | "evening" | "night" | "">("");
   const timeSlots = watch("timeSlotPreference") || [];
 
-  const addTimeSlot = () => {
-    if (!timeSlotInput) return;
-    if ((timeSlots as string[]).includes(timeSlotInput)) return;
-    setValue("timeSlotPreference", [...timeSlots, timeSlotInput], { shouldValidate: true });
-    setTimeSlotInput("");
-  };
-
-  const removeTimeSlot = (index: number) => {
-    setValue("timeSlotPreference", timeSlots.filter((_, i) => i !== index), { shouldValidate: true });
+  const toggleTimeSlot = (value: string) => {
+    const next = (timeSlots as string[]).includes(value)
+      ? (timeSlots as string[]).filter((t) => t !== value)
+      : [...timeSlots, value];
+    setValue("timeSlotPreference", next, { shouldValidate: true });
   };
 
   return (
@@ -92,50 +87,29 @@ export default function TimingSection() {
       </div>
 
       {/* Time Slot Preference */}
-      <div className="space-y-2 text-left">
-        <label className="text-sm font-semibold text-gray-700">Time Slot Preferences</label>
-        <div className="flex gap-2">
-          <select
-            value={timeSlotInput}
-            onChange={(e) => setTimeSlotInput(e.target.value as "morning" | "afternoon" | "evening" | "night" | "")}
-            className="flex-1 rounded-lg border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-slate-200 transition-all text-sm font-medium text-gray-800"
-          >
-            <option value="">Select time slot</option>
-            <option value="morning">Morning</option>
-            <option value="afternoon">Afternoon</option>
-            <option value="evening">Evening</option>
-            <option value="night">Night</option>
-          </select>
-          <button
-            type="button"
-            onClick={addTimeSlot}
-            className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-black transition-all flex items-center justify-center shrink-0"
-          >
-            <Plus size={18} />
-          </button>
+      <div className="space-y-2 text-left bg-amber-50/50 p-4 border border-amber-100 rounded-2xl">
+        <label className="text-xs font-bold uppercase tracking-wider text-amber-800">Time Slot Preferences</label>
+        <div className="flex flex-wrap gap-1.5 p-3 bg-white border border-amber-100 rounded-xl max-h-40 overflow-y-auto">
+          {TIME_SLOT_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => toggleTimeSlot(opt.value)}
+              className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all duration-300 ${
+                (timeSlots as string[]).includes(opt.value)
+                  ? "bg-amber-900 text-white border-amber-900 shadow-sm"
+                  : "bg-amber-50/50 text-amber-400 border-amber-100/50 hover:bg-amber-100/80"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
         {errors.timeSlotPreference?.message && (
           <p className="text-red-500 text-xs font-semibold mt-1">
             {String(errors.timeSlotPreference.message)}
           </p>
         )}
-        <div className="flex flex-wrap gap-2 mt-2">
-          {timeSlots.map((slot: string, idx: number) => (
-            <span
-              key={idx}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium"
-            >
-              {slot}
-              <button
-                type="button"
-                onClick={() => removeTimeSlot(idx)}
-                className="hover:text-amber-900"
-              >
-                <X size={14} />
-              </button>
-            </span>
-          ))}
-        </div>
       </div>
 
       {/* Difficulty Level & Age Limits */}

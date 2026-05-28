@@ -140,75 +140,43 @@ export default function CreateDestination({
           </div>
         </header>
 
-        {/* Main Grid Layout */}
-        <div className="relative z-10 flex-1 flex flex-col md:flex-row max-w-7xl mx-auto w-full p-6 gap-8 overflow-hidden">
-          {/* Futuristic Sidebar */}
-          <aside className="w-full md:w-80 space-y-6 flex flex-col">
-            <div className="bg-white/80 backdrop-blur-md border border-slate-200 rounded-[2.5rem] p-6 shadow-sm flex-1">
-              <div className="mb-8 px-2 flex items-center justify-between">
-                <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                  <Compass size={14} /> Registry Flow
-                </h2>
-                <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">{Math.round(progress)}%</span>
-              </div>
-
-              <nav className="flex md:flex-col gap-1.5 overflow-x-auto md:overflow-x-visible no-scrollbar pb-2 md:pb-0">
-                {SECTIONS.map((step, index) => (
-                  <button
-                    key={step.id}
-                    type="button"
-                    onClick={() => setCurrentStep(index)}
-                    className={`flex-none md:w-full group flex items-center gap-3 md:gap-4 px-3 md:px-4 py-3 md:py-4 rounded-2xl md:rounded-[1.5rem] text-left transition-all duration-500 relative overflow-hidden ${
-                      currentStep === index 
-                        ? 'bg-slate-900 text-white shadow-2xl shadow-slate-900/20 md:translate-x-2' 
-                        : 'text-slate-500 hover:bg-white hover:shadow-sm'
-                    }`}
-                  >
-                    <div className={`p-2 md:p-2.5 rounded-xl md:rounded-2xl transition-all duration-300 ${
-                      currentStep === index 
-                        ? 'bg-white/10 text-white rotate-0' 
-                        : 'bg-slate-50 text-slate-400 group-hover:bg-slate-100 group-hover:rotate-12'
-                    }`}>
-                      {step.icon}
-                    </div>
-                    <div className="flex-1 min-w-[70px] md:min-w-0 text-left">
-                      <div className={`text-[9px] md:text-[11px] font-black uppercase tracking-widest ${currentStep === index ? 'text-white' : 'text-slate-900'}`}>
-                        {step.label}
-                      </div>
-                      <div className={`hidden md:block text-[9px] font-bold mt-0.5 ${currentStep === index ? 'text-slate-400' : 'text-slate-400'}`}>
-                        {step.sub}
-                      </div>
-                    </div>
-                    {index < currentStep && (
-                      <div className="p-1 bg-emerald-500 rounded-full text-white shrink-0">
-                        <Check size={8} />
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </nav>
+        {/* Main Layout Stacked Vertically */}
+        <div className="relative z-10 flex-1 flex flex-col max-w-7xl mx-auto w-full p-6 gap-6 overflow-hidden">
+          {/* Navigation Tabs at the Top */}
+          <div className="flex bg-white border border-slate-200/60 rounded-3xl p-2.5 overflow-x-auto no-scrollbar whitespace-nowrap shadow-md shadow-slate-900/5 items-center justify-between">
+            <div className="flex gap-2">
+              {SECTIONS.map((step, index) => (
+                <button
+                  key={step.id}
+                  type="button"
+                  onClick={() => setCurrentStep(index)}
+                  className={`flex items-center gap-2.5 px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 shrink-0 ${
+                    currentStep === index
+                      ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20"
+                      : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  {step.icon} {step.label}
+                  {index < currentStep && (
+                    <span className="p-0.5 bg-emerald-500 rounded-full text-white shrink-0 ml-1">
+                      <Check size={8} />
+                    </span>
+                  )}
+                </button>
+              ))}
             </div>
-
-            {/* Quick Context Card */}
-            <div className="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-indigo-100">
-              <Sparkles className="absolute -right-4 -bottom-4 opacity-10" size={140} />
-              <div className="relative z-10 text-left">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 bg-white/20 rounded-xl">
-                    <ShieldCheck size={16} />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-indigo-100">Data Integrity</span>
-                </div>
-                <h4 className="text-lg font-black tracking-tight leading-tight">Optimization Engine</h4>
-                <p className="text-[10px] font-bold text-indigo-100 mt-3 leading-relaxed opacity-80">
-                  Complete all intelligence fields to maximize the AI matching score for travelers.
-                </p>
-              </div>
+            
+            {/* Quick Progress Indicator on the Right */}
+            <div className="hidden lg:flex items-center gap-3 pr-4">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Progress</span>
+              <span className="text-xs bg-indigo-50 text-indigo-600 font-black px-3 py-1 rounded-full border border-indigo-100">
+                {Math.round(progress)}%
+              </span>
             </div>
-          </aside>
+          </div>
 
           {/* Dynamic Form Content */}
-          <main className="flex-1 bg-white border border-slate-200 rounded-[3rem] shadow-sm flex flex-col relative overflow-hidden">
+          <main className="flex-1 bg-white border border-slate-200 rounded-[3rem] shadow-sm flex flex-col relative overflow-hidden min-h-[600px]">
             {/* Visual Accent */}
             <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
             

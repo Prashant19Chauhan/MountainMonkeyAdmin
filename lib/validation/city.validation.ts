@@ -33,6 +33,8 @@ export const citySchema = z.object({
     coordinates: z
       .array(
         z.number({ message: "Coordinate must be a numeric value" })
+        .min(-180, "Coordinate must be greater than or equal to -180")
+        .max(180, "Coordinate must be less than or equal to 180")
       )
       .length(2, "Coordinates must consist of exactly two values [longitude, latitude]")
   }),

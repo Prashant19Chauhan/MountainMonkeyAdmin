@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useFormContext } from "react-hook-form";
-import { Plus, X } from "lucide-react";
+import { TAGS_OPTIONS, RECOMMENDED_FOR_OPTIONS } from "@/lib/validation/activity.validation";
 
 export default function TagsSection() {
   const {
@@ -11,130 +11,71 @@ export default function TagsSection() {
     formState: { errors },
   } = useFormContext();
 
-  const [tagInput, setTagInput] = useState("");
-  const [recommendedInput, setRecommendedInput] = useState("");
-
   const tags: string[] = watch("tags") || [];
   const recommendedFor: string[] = watch("recommendedFor") || [];
 
-  const addTag = () => {
-    if (!tagInput.trim()) return;
-    if (tags.includes(tagInput.trim())) return;
-    setValue("tags", [...tags, tagInput.trim()], { shouldValidate: true });
-    setTagInput("");
+  const toggleTag = (value: string) => {
+    const next = tags.includes(value)
+      ? tags.filter((t) => t !== value)
+      : [...tags, value];
+    setValue("tags", next, { shouldValidate: true });
   };
 
-  const removeTag = (index: number) => {
-    setValue("tags", tags.filter((_, i) => i !== index), { shouldValidate: true });
-  };
-
-  const addRecommended = () => {
-    if (!recommendedInput.trim()) return;
-    if (recommendedFor.includes(recommendedInput.trim())) return;
-    setValue("recommendedFor", [...recommendedFor, recommendedInput.trim()], { shouldValidate: true });
-    setRecommendedInput("");
-  };
-
-  const removeRecommended = (index: number) => {
-    setValue("recommendedFor", recommendedFor.filter((_, i) => i !== index), { shouldValidate: true });
+  const toggleRecommended = (value: string) => {
+    const next = recommendedFor.includes(value)
+      ? recommendedFor.filter((r) => r !== value)
+      : [...recommendedFor, value];
+    setValue("recommendedFor", next, { shouldValidate: true });
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Tags Selection */}
-      <div className="space-y-2 text-left">
-        <label className="text-sm font-semibold text-gray-700">Tags</label>
-        <div className="flex gap-2">
-          <select
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            className="flex-1 rounded-lg border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-slate-200 transition-all text-sm font-medium text-gray-800"
-          >
-            <option value="">Select tag</option>
-            <option value="budget">Budget</option>
-            <option value="luxury">Luxury</option>
-            <option value="family">Family</option>
-            <option value="couple">Couple</option>
-            <option value="solo">Solo</option>
-            <option value="adventure">Adventure</option>
-            <option value="relaxing">Relaxing</option>
-          </select>
-          <button
-            type="button"
-            onClick={addTag}
-            className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-black transition-all flex items-center justify-center shrink-0"
-          >
-            <Plus size={18} />
-          </button>
+      <div className="space-y-2 text-left bg-indigo-50/50 p-4 border border-indigo-100 rounded-2xl">
+        <label className="text-xs font-bold uppercase tracking-wider text-indigo-800">Tags</label>
+        <div className="flex flex-wrap gap-1.5 p-3 bg-white border border-indigo-100 rounded-xl max-h-40 overflow-y-auto">
+          {TAGS_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => toggleTag(opt.value)}
+              className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all duration-300 ${
+                tags.includes(opt.value)
+                  ? "bg-indigo-900 text-white border-indigo-900 shadow-sm"
+                  : "bg-indigo-50/50 text-indigo-400 border-indigo-100/50 hover:bg-indigo-100/80"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
         {errors.tags?.message && (
           <p className="text-red-500 text-xs font-semibold mt-1">{String(errors.tags.message)}</p>
         )}
-        <div className="flex flex-wrap gap-2 mt-2">
-          {tags.map((tag: string, idx: number) => (
-            <span
-              key={idx}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-medium"
-            >
-              {tag}
-              <button
-                type="button"
-                onClick={() => removeTag(idx)}
-                className="hover:text-indigo-900"
-              >
-                <X size={14} />
-              </button>
-            </span>
-          ))}
-        </div>
       </div>
 
       {/* Recommended For Selection */}
-      <div className="space-y-2 text-left">
-        <label className="text-sm font-semibold text-gray-700">Recommended For</label>
-        <div className="flex gap-2">
-          <select
-            value={recommendedInput}
-            onChange={(e) => setRecommendedInput(e.target.value)}
-            className="flex-1 rounded-lg border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-slate-200 transition-all text-sm font-medium text-gray-800"
-          >
-            <option value="">Select audience</option>
-            <option value="solo">Solo</option>
-            <option value="couple">Couple</option>
-            <option value="family">Family</option>
-            <option value="friends">Friends</option>
-            <option value="adventure_seekers">Adventure Seekers</option>
-          </select>
-          <button
-            type="button"
-            onClick={addRecommended}
-            className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-black transition-all flex items-center justify-center shrink-0"
-          >
-            <Plus size={18} />
-          </button>
-        </div>
-        {errors.recommendedFor?.message && (
-          <p className="text-red-500 text-xs font-semibold mt-1">
-            {String(errors.recommendedFor.message)}
-          </p>
-        )}
-        <div className="flex flex-wrap gap-2 mt-2">
-          {recommendedFor.map((rec: string, idx: number) => (
-            <span
-              key={idx}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium"
+      <div className="space-y-2 text-left bg-green-50/50 p-4 border border-green-100 rounded-2xl">
+        <label className="text-xs font-bold uppercase tracking-wider text-green-800">Recommended For</label>
+        <div className="flex flex-wrap gap-1.5 p-3 bg-white border border-green-100 rounded-xl max-h-40 overflow-y-auto">
+          {RECOMMENDED_FOR_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => toggleRecommended(opt.value)}
+              className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all duration-300 ${
+                recommendedFor.includes(opt.value)
+                  ? "bg-green-900 text-white border-green-900 shadow-sm"
+                  : "bg-green-50/50 text-green-400 border-green-100/50 hover:bg-green-100/80"
+              }`}
             >
-              {rec.replace("_", " ")}
-              <button
-                type="button"
-                onClick={() => removeRecommended(idx)}
-                className="hover:text-green-900"
-              >
-                <X size={14} />
-              </button>
-            </span>
+              {opt.label}
+            </button>
           ))}
         </div>
+        {errors.recommendedFor?.message && (
+          <p className="text-red-500 text-xs font-semibold mt-1">{String(errors.recommendedFor.message)}</p>
+        )}
       </div>
     </div>
   );

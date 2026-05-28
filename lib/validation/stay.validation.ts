@@ -1,5 +1,83 @@
 import { z } from "zod";
 
+export const STAY_AMENITIES_OPTIONS = [
+  { value: "wifi", label: "Free WiFi" },
+  { value: "pool", label: "Swimming Pool" },
+  { value: "parking", label: "Free Parking" },
+  { value: "gym", label: "Fitness Center / Gym" },
+  { value: "spa", label: "Wellness Spa" },
+  { value: "restaurant", label: "In-house Restaurant" },
+  { value: "bar", label: "Bar / Lounge" },
+  { value: "room_service", label: "Room Service" },
+  { value: "ac", label: "Air Conditioning" },
+  { value: "tv", label: "Smart TV" },
+  { value: "heater", label: "Room Heater" },
+  { value: "laundry", label: "Laundry Service" },
+  { value: "pet_friendly", label: "Pet Friendly" },
+  { value: "wheelchair_accessible", label: "Wheelchair Accessible" },
+  { value: "bonfire", label: "Bonfire Evening" },
+  { value: "trekking_guide", label: "Trekking Guide" },
+  { value: "kids_play_area", label: "Kids Play Area" },
+  { value: "campfire", label: "Campfire Facility" },
+  { value: "breakfast_included", label: "Complimentary Breakfast" },
+  { value: "kitchenette", label: "In-room Kitchenette" },
+  { value: "balcony", label: "Private Balcony" },
+  { value: "lake_view", label: "Lake View" },
+  { value: "mountain_view", label: "Mountain View" },
+  { value: "garden", label: "Private Garden" },
+  { value: "game_room", label: "Indoor Game Room" },
+  { value: "conference_hall", label: "Conference Hall" },
+  { value: "doctor_on_call", label: "Doctor on Call" }
+] as const;
+
+export const STAY_TAGS_OPTIONS = [
+  { value: "luxury", label: "Premium / Luxury" },
+  { value: "mountain_view", label: "Mountain View" },
+  { value: "family_friendly", label: "Family Friendly" },
+  { value: "riverfront", label: "Riverfront" },
+  { value: "eco_lodge", label: "Eco-Lodge / Green" },
+  { value: "heritage", label: "Heritage / Historic" },
+  { value: "cozy", label: "Cozy & Warm" },
+  { value: "budget", label: "Budget Friendly" },
+  { value: "romantic", label: "Romantic Escape" },
+  { value: "offbeat", label: "Offbeat / Secluded" },
+  { value: "forest_view", label: "Forest View" },
+  { value: "lakeview", label: "Lakeview" },
+  { value: "backpacker_hub", label: "Backpacker Hub" },
+  { value: "boutique", label: "Boutique Vibe" },
+  { value: "secluded", label: "Secluded & Quiet" },
+  { value: "pet_friendly", label: "Pet Friendly Stays" }
+] as const;
+
+export const STAY_SUITABLE_FOR_OPTIONS = [
+  { value: "couples", label: "Couples" },
+  { value: "families", label: "Families" },
+  { value: "business_travelers", label: "Business Travelers" },
+  { value: "solo_travelers", label: "Solo Travelers" },
+  { value: "groups", label: "Groups" },
+  { value: "backpackers", label: "Backpackers" },
+  { value: "wellness_seekers", label: "Wellness Seekers" },
+  { value: "honeymooners", label: "Honeymooners" },
+  { value: "digital_nomads", label: "Digital Nomads" },
+  { value: "pet_owners", label: "Pet Owners" }
+] as const;
+
+export const STAY_TYPE_OPTIONS = [
+  { value: "boutique", label: "Boutique Hotel" },
+  { value: "heritage", label: "Heritage Stay" },
+  { value: "resort", label: "Premium Resort" },
+  { value: "glamping", label: "Glamping / Luxury Camp" },
+  { value: "homestay", label: "Homestay / Local Host" },
+  { value: "hostel", label: "Hostel / Social Hub" },
+  { value: "cottage", label: "Cottage" },
+  { value: "villa", label: "Luxury Villa" },
+  { value: "hotel", label: "Standard Hotel" },
+  { value: "camp", label: "Adventure Camping" },
+  { value: "cabin", label: "Wood Cabin" },
+  { value: "treehouse", label: "Treehouse" },
+  { value: "guest_house", label: "Guesthouse" }
+] as const;
+
 /* ==========================================
    COMMON VALIDATORS
 ========================================== */
@@ -28,10 +106,10 @@ const roomSchema = z.object({
       .number("Maximum room price is required")
       .min(0, "Maximum room price cannot be negative")
   })
-  .refine((data) => data.max >= data.min, {
-    message: "Maximum room price must be greater than minimum",
-    path: ["max"]
-  }),
+    .refine((data) => data.max >= data.min, {
+      message: "Maximum room price must be greater than minimum",
+      path: ["max"]
+    }),
 
   capacity: z
     .number("Room capacity is required")
@@ -48,10 +126,10 @@ const roomSchema = z.object({
       .number()
       .min(0, "Available rooms cannot be negative")
   })
-  .refine((data) => data.availableRooms <= data.totalRooms, {
-    message: "Available rooms cannot exceed total rooms",
-    path: ["availableRooms"]
-  }),
+    .refine((data) => data.availableRooms <= data.totalRooms, {
+      message: "Available rooms cannot exceed total rooms",
+      path: ["availableRooms"]
+    }),
 
   roomImages: z.array(z.string()).optional()
 });
@@ -155,10 +233,10 @@ export const staySchemaValidation = z.object({
       .number()
       .min(0, "Maximum price cannot be negative")
   })
-  .refine((data) => data.max >= data.min, {
-    message: "Maximum price must be greater than minimum price",
-    path: ["max"]
-  }),
+    .refine((data) => data.max >= data.min, {
+      message: "Maximum price must be greater than minimum price",
+      path: ["max"]
+    }),
 
   // ==========================================
   // ROOMS
@@ -172,7 +250,7 @@ export const staySchemaValidation = z.object({
   // AMENITIES
   // ==========================================
 
-  amenities: z.array(z.string()).optional(),
+  amenities: z.array(z.enum(STAY_AMENITIES_OPTIONS.map(o => o.value) as [string, ...string[]])).optional(),
 
   // ==========================================
   // POLICIES
@@ -237,14 +315,14 @@ export const staySchemaValidation = z.object({
   // ==========================================
 
   aiMetaData: z.object({
-    tags: z.array(z.string()).optional(),
+    tags: z.array(z.enum(STAY_TAGS_OPTIONS.map(o => o.value) as [string, ...string[]])).optional(),
 
     suitableFor: z
-      .array(z.string())
+      .array(z.enum(STAY_SUITABLE_FOR_OPTIONS.map(o => o.value) as [string, ...string[]]))
       .optional(),
 
     stayType: z
-      .array(z.string())
+      .array(z.enum(STAY_TYPE_OPTIONS.map(o => o.value) as [string, ...string[]]))
       .optional()
   }).optional(),
 

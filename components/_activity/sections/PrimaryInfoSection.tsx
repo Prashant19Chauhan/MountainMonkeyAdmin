@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Plus, X } from "lucide-react";
+import { CATEGORY_OPTIONS } from "@/lib/validation/activity.validation";
 
 interface PrimaryInfoSectionProps {
   destinations: any[];
@@ -16,18 +17,13 @@ export default function PrimaryInfoSection({ destinations }: PrimaryInfoSectionP
     formState: { errors },
   } = useFormContext();
 
-  const [categoryInput, setCategoryInput] = useState("");
   const categories: string[] = watch("category") || [];
 
-  const addCategory = () => {
-    if (!categoryInput.trim()) return;
-    if (categories.includes(categoryInput.trim())) return;
-    setValue("category", [...categories, categoryInput.trim()], { shouldValidate: true });
-    setCategoryInput("");
-  };
-
-  const removeCategory = (index: number) => {
-    setValue("category", categories.filter((_, i) => i !== index), { shouldValidate: true });
+  const toggleCategory = (value: string) => {
+    const next = categories.includes(value)
+      ? categories.filter((c) => c !== value)
+      : [...categories, value];
+    setValue("category", next, { shouldValidate: true });
   };
 
   return (
@@ -84,50 +80,27 @@ export default function PrimaryInfoSection({ destinations }: PrimaryInfoSectionP
       </div>
 
       {/* Category Array */}
-      <div className="space-y-2 text-left">
-        <label className="text-sm font-semibold text-gray-700">Categories</label>
-        <div className="flex gap-2">
-          <select
-            value={categoryInput}
-            onChange={(e) => setCategoryInput(e.target.value)}
-            className="flex-1 rounded-lg border border-gray-200 px-4 py-2.5 outline-none focus:ring-2 focus:ring-slate-200 transition-all text-sm font-medium text-gray-800"
-          >
-            <option value="">Select category</option>
-            <option value="trekking">Trekking</option>
-            <option value="paragliding">Paragliding</option>
-            <option value="museum">Museum</option>
-            <option value="temple">Temple</option>
-            <option value="street_food">Street Food</option>
-            <option value="market">Market</option>
-          </select>
-          <button
-            type="button"
-            onClick={addCategory}
-            className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-black transition-all flex items-center justify-center shrink-0"
-          >
-            <Plus size={18} />
-          </button>
+      <div className="space-y-2 text-left bg-blue-50/50 p-4 border border-blue-100 rounded-2xl">
+        <label className="text-xs font-bold uppercase tracking-wider text-blue-800">Categories</label>
+        <div className="flex flex-wrap gap-1.5 p-3 bg-white border border-blue-100 rounded-xl max-h-40 overflow-y-auto">
+          {CATEGORY_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => toggleCategory(opt.value)}
+              className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all duration-300 ${
+                categories.includes(opt.value)
+                  ? "bg-blue-900 text-white border-blue-900 shadow-sm"
+                  : "bg-blue-50/50 text-blue-400 border-blue-100/50 hover:bg-blue-100/80"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
         {errors.category?.message && (
           <p className="text-red-500 text-xs font-semibold mt-1">{String(errors.category.message)}</p>
         )}
-        <div className="flex flex-wrap gap-2 mt-2">
-          {categories.map((cat: string, idx: number) => (
-            <span
-              key={idx}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
-            >
-              {cat}
-              <button
-                type="button"
-                onClick={() => removeCategory(idx)}
-                className="hover:text-blue-900"
-              >
-                <X size={14} />
-              </button>
-            </span>
-          ))}
-        </div>
       </div>
 
       {/* Short Description */}

@@ -1,8 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useFormContext } from "react-hook-form";
 import { Tag, TrendingUp } from "lucide-react";
+import {
+  STAY_TAGS_OPTIONS,
+  STAY_SUITABLE_FOR_OPTIONS,
+  STAY_TYPE_OPTIONS
+} from "@/lib/validation/stay.validation";
 
 export default function AIMetaTab() {
   const {
@@ -12,102 +17,98 @@ export default function AIMetaTab() {
     formState: { errors },
   } = useFormContext();
 
+  const aiScoreErrors = errors.aiScore as any;
+  const aiMetaDataErrors = errors.aiMetaData as any;
+
   const tags: string[] = watch("aiMetaData.tags") || [];
   const suitableFor: string[] = watch("aiMetaData.suitableFor") || [];
   const stayType: string[] = watch("aiMetaData.stayType") || [];
 
-  const aiScoreErrors = errors.aiScore as any;
-
-  const [tagsText, setTagsText] = useState("");
-  const [suitableText, setSuitableText] = useState("");
-  const [stayTypeText, setStayTypeText] = useState("");
-
-  useEffect(() => {
-    if (tags.length > 0 && !tagsText) setTagsText(tags.join(", "));
-  }, [tags]);
-
-  useEffect(() => {
-    if (suitableFor.length > 0 && !suitableText) setSuitableText(suitableFor.join(", "));
-  }, [suitableFor]);
-
-  useEffect(() => {
-    if (stayType.length > 0 && !stayTypeText) setStayTypeText(stayType.join(", "));
-  }, [stayType]);
-
-  const handleBlurField = (fieldPath: string, text: string) => {
-    const arr = text
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-    setValue(fieldPath, arr, { shouldValidate: true });
+  const toggleItem = (fieldPath: string, currentList: string[], item: string) => {
+    const next = currentList.includes(item)
+      ? currentList.filter((m) => m !== item)
+      : [...currentList, item];
+    setValue(fieldPath, next, { shouldValidate: true });
   };
 
   return (
     <div className="space-y-8 text-left animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* AI Metadata Box */}
-      <div className="p-5 bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-100 rounded-3xl space-y-4">
+      <div className="p-5 bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-100 rounded-3xl space-y-6">
         <h3 className="text-sm font-black text-purple-900 uppercase tracking-widest flex items-center gap-2">
           <Tag size={16} /> AI Metadata
         </h3>
 
         {/* Tags */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-purple-800">Tags (comma-separated)</label>
-          <input
-            type="text"
-            value={tagsText}
-            onChange={(e) => setTagsText(e.target.value)}
-            onBlur={() => handleBlurField("aiMetaData.tags", tagsText)}
-            placeholder="e.g. luxury, mountain-view, family-friendly"
-            className="w-full rounded-xl border border-purple-200 px-3 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-purple-200 bg-white text-gray-800"
-          />
-          <div className="flex flex-wrap gap-1.5 mt-1">
-            {tags.map((tag) => (
-              <span key={tag} className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-md text-[10px] font-bold">
-                {tag}
-              </span>
+          <label className="text-xs font-bold text-purple-800">Tags</label>
+          <div className="flex flex-wrap gap-1.5 p-3 bg-white border border-purple-100 rounded-2xl max-h-40 overflow-y-auto">
+            {STAY_TAGS_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => toggleItem("aiMetaData.tags", tags, opt.value)}
+                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all duration-300 ${
+                  tags.includes(opt.value)
+                    ? "bg-purple-900 text-white border-purple-900 shadow-sm"
+                    : "bg-purple-50/50 text-purple-400 border-purple-100/50 hover:bg-purple-100/80"
+                }`}
+              >
+                {opt.label}
+              </button>
             ))}
           </div>
+          {aiMetaDataErrors?.tags?.message && (
+            <p className="text-red-500 text-xs font-semibold mt-1">{String(aiMetaDataErrors.tags.message)}</p>
+          )}
         </div>
 
         {/* Suitable For */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-purple-800">Suitable For (comma-separated)</label>
-          <input
-            type="text"
-            value={suitableText}
-            onChange={(e) => setSuitableText(e.target.value)}
-            onBlur={() => handleBlurField("aiMetaData.suitableFor", suitableText)}
-            placeholder="e.g. couples, families, business travelers"
-            className="w-full rounded-xl border border-purple-200 px-3 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-purple-200 bg-white text-gray-800"
-          />
-          <div className="flex flex-wrap gap-1.5 mt-1">
-            {suitableFor.map((item) => (
-              <span key={item} className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-md text-[10px] font-bold">
-                {item}
-              </span>
+          <label className="text-xs font-bold text-purple-800">Suitable For</label>
+          <div className="flex flex-wrap gap-1.5 p-3 bg-white border border-purple-100 rounded-2xl max-h-40 overflow-y-auto">
+            {STAY_SUITABLE_FOR_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => toggleItem("aiMetaData.suitableFor", suitableFor, opt.value)}
+                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all duration-300 ${
+                  suitableFor.includes(opt.value)
+                    ? "bg-purple-900 text-white border-purple-900 shadow-sm"
+                    : "bg-purple-50/50 text-purple-400 border-purple-100/50 hover:bg-purple-100/80"
+                }`}
+              >
+                {opt.label}
+              </button>
             ))}
           </div>
+          {aiMetaDataErrors?.suitableFor?.message && (
+            <p className="text-red-500 text-xs font-semibold mt-1">{String(aiMetaDataErrors.suitableFor.message)}</p>
+          )}
         </div>
 
         {/* Stay Type */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-purple-800">Stay Type (comma-separated)</label>
-          <input
-            type="text"
-            value={stayTypeText}
-            onChange={(e) => setStayTypeText(e.target.value)}
-            onBlur={() => handleBlurField("aiMetaData.stayType", stayTypeText)}
-            placeholder="e.g. boutique, heritage, resort, glamping"
-            className="w-full rounded-xl border border-purple-200 px-3 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-purple-200 bg-white text-gray-800"
-          />
-          <div className="flex flex-wrap gap-1.5 mt-1">
-            {stayType.map((type) => (
-              <span key={type} className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-md text-[10px] font-bold">
-                {type}
-              </span>
+          <label className="text-xs font-bold text-purple-800">Stay Type</label>
+          <div className="flex flex-wrap gap-1.5 p-3 bg-white border border-purple-100 rounded-2xl max-h-40 overflow-y-auto">
+            {STAY_TYPE_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => toggleItem("aiMetaData.stayType", stayType, opt.value)}
+                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all duration-300 ${
+                  stayType.includes(opt.value)
+                    ? "bg-purple-900 text-white border-purple-900 shadow-sm"
+                    : "bg-purple-50/50 text-purple-400 border-purple-100/50 hover:bg-purple-100/80"
+                }`}
+              >
+                {opt.label}
+              </button>
             ))}
           </div>
+          {aiMetaDataErrors?.stayType?.message && (
+            <p className="text-red-500 text-xs font-semibold mt-1">{String(aiMetaDataErrors.stayType.message)}</p>
+          )}
         </div>
       </div>
 

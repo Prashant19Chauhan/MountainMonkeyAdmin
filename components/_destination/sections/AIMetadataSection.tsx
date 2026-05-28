@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useFormContext } from "react-hook-form";
-import { destinationInput } from "@/lib/validation/destination.validation";
+import { destinationInput, DEST_TAGS_OPTIONS, DEST_MOOD_OPTIONS, DEST_SUITABLE_FOR_OPTIONS, DEST_TRAVEL_STYLE_OPTIONS } from "@/lib/validation/destination.validation";
 import { Sparkles } from "lucide-react";
 
 const FieldHeader = ({ title, subtitle, icon }: { title: string; subtitle: string; icon: React.ReactNode }) => (
@@ -62,18 +62,18 @@ export default function AIMetadataSection() {
         <div className="space-y-4">
           <FormLabel>Dominant Mood</FormLabel>
           <div className="flex flex-wrap gap-2">
-            {["Relaxing", "Adventure", "Soulful", "Nature", "Luxury", "Vibrant", "Ethereal"].map((item) => (
+            {DEST_MOOD_OPTIONS.map((opt) => (
               <button
-                key={item}
+                key={opt.value}
                 type="button"
                 className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all duration-300 ${
-                  mood.includes(item)
+                  mood.includes(opt.value)
                     ? "bg-slate-900 text-white border-slate-900 shadow-md"
                     : "bg-white text-slate-400 border-slate-100 hover:bg-slate-50"
                 }`}
-                onClick={() => toggleItem("aiMetadata.mood", mood, item)}
+                onClick={() => toggleItem("aiMetadata.mood", mood, opt.value)}
               >
-                {item}
+                {opt.label}
               </button>
             ))}
           </div>
@@ -86,18 +86,18 @@ export default function AIMetadataSection() {
         <div className="space-y-4">
           <FormLabel>Travel Architecture</FormLabel>
           <div className="flex flex-wrap gap-2">
-            {["Backpacking", "Fast-paced", "Slow Travel", "Eco-focus", "Luxury"].map((item) => (
+            {DEST_TRAVEL_STYLE_OPTIONS.map((opt) => (
               <button
-                key={item}
+                key={opt.value}
                 type="button"
                 className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all duration-300 ${
-                  travelStyle.includes(item)
+                  travelStyle.includes(opt.value)
                     ? "bg-slate-900 text-white border-slate-900 shadow-md"
                     : "bg-white text-slate-400 border-slate-100 hover:bg-slate-50"
                 }`}
-                onClick={() => toggleItem("aiMetadata.travelStyle", travelStyle, item)}
+                onClick={() => toggleItem("aiMetadata.travelStyle", travelStyle, opt.value)}
               >
-                {item}
+                {opt.label}
               </button>
             ))}
           </div>
@@ -110,18 +110,18 @@ export default function AIMetadataSection() {
         <div className="space-y-4">
           <FormLabel>Suitability Index</FormLabel>
           <div className="flex flex-wrap gap-2">
-            {["Solo", "Couples", "Families", "Groups", "Digital Nomads"].map((item) => (
+            {DEST_SUITABLE_FOR_OPTIONS.map((opt) => (
               <button
-                key={item}
+                key={opt.value}
                 type="button"
                 className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all duration-300 ${
-                  suitableFor.includes(item)
+                  suitableFor.includes(opt.value)
                     ? "bg-slate-900 text-white border-slate-900 shadow-md"
                     : "bg-white text-slate-400 border-slate-100 hover:bg-slate-50"
                 }`}
-                onClick={() => toggleItem("aiMetadata.suitableFor", suitableFor, item)}
+                onClick={() => toggleItem("aiMetadata.suitableFor", suitableFor, opt.value)}
               >
-                {item}
+                {opt.label}
               </button>
             ))}
           </div>
@@ -134,18 +134,18 @@ export default function AIMetadataSection() {
         <div className="space-y-4">
           <FormLabel>Semantic Registry (Tags)</FormLabel>
           <div className="flex flex-wrap gap-2">
-            {["Alpine", "Tropical", "Urban", "Desert", "Ancient", "Spiritual"].map((item) => (
+            {DEST_TAGS_OPTIONS.map((opt) => (
               <button
-                key={item}
+                key={opt.value}
                 type="button"
                 className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all duration-300 ${
-                  tags.includes(item)
+                  tags.includes(opt.value)
                     ? "bg-slate-900 text-white border-slate-900 shadow-md"
                     : "bg-white text-slate-400 border-slate-100 hover:bg-slate-50"
                 }`}
-                onClick={() => toggleItem("aiMetadata.tags", tags, item)}
+                onClick={() => toggleItem("aiMetadata.tags", tags, opt.value)}
               >
-                {item}
+                {opt.label}
               </button>
             ))}
           </div>

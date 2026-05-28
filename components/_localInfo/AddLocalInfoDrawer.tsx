@@ -213,20 +213,12 @@ export default function AddLocalInfoForm({ localInfoHook }: AddLocalInfoFormProp
         </div>
       </div>
 
-      {/* Main Structural Layout Grid Layout */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* Main Structural Layout Grid Layout - Refactored to stack vertically */}
+      <div className="max-w-7xl mx-auto flex flex-col gap-6 items-stretch">
         
-        {/* LEFT CARD COLUMN: Tab Progress & Form State Navigation */}
-        <div className="lg:col-span-4 bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm space-y-6">
-          <div className="flex justify-between items-center px-2">
-            <span className="text-xs font-black uppercase tracking-widest text-slate-400">Registry Flow</span>
-            <span className="text-xs bg-indigo-50 text-indigo-600 font-black px-2.5 py-0.5 rounded-full transition-all">
-              {calculateProgress()}%
-            </span>
-          </div>
-
-          {/* Form Processing Interactive Tab Sidebar Link Items */}
-          <div className="space-y-2">
+        {/* Navigation Tabs at the Top */}
+        <div className="flex bg-white border border-slate-100 rounded-3xl p-2.5 overflow-x-auto no-scrollbar whitespace-nowrap shadow-sm items-center justify-between">
+          <div className="flex gap-2">
             {steps.map((step) => {
               const isSelected = activeTab === step.id;
               const StepIcon = step.icon;
@@ -236,33 +228,30 @@ export default function AddLocalInfoForm({ localInfoHook }: AddLocalInfoFormProp
                   type="button"
                   disabled={tabOrder.indexOf(step.id) > currentStepIndex && !validation.isValid}
                   onClick={() => setActiveTab(step.id)}
-                  className={`w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all relative ${
+                  className={`flex items-center gap-2.5 px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 shrink-0 ${
                     isSelected
-                      ? "bg-[#0F172A] text-white shadow-xl shadow-slate-900/10"
-                      : "hover:bg-slate-50 text-slate-600 disabled:opacity-40 disabled:hover:bg-transparent"
+                      ? "bg-[#0F172A] text-white shadow-lg shadow-slate-900/20"
+                      : "text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-transparent"
                   }`}
                 >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                    isSelected ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-500"
-                  }`}>
-                    <StepIcon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className={`text-[10px] font-black tracking-widest uppercase ${isSelected ? "text-slate-300" : "text-slate-400"}`}>
-                      {step.title}
-                    </div>
-                    <div className={`text-sm font-bold ${isSelected ? "text-white" : "text-slate-700"}`}>
-                      {step.subtitle}
-                    </div>
-                  </div>
+                  <StepIcon className="w-4 h-4" />
+                  <span>{step.title}</span>
                 </button>
               );
             })}
           </div>
+          
+          {/* Quick Progress Indicator on the Right */}
+          <div className="hidden lg:flex items-center gap-3 pr-4">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Progress</span>
+            <span className="text-xs bg-indigo-50 text-indigo-600 font-black px-3 py-1 rounded-full border border-indigo-100">
+              {calculateProgress()}%
+            </span>
+          </div>
         </div>
 
-        {/* RIGHT CARD COLUMN: Animated Dynamic Content Canvas */}
-        <div className="lg:col-span-8 bg-white border border-slate-100 rounded-[2.5rem] shadow-sm relative overflow-hidden flex flex-col min-h-[600px]">
+        {/* RIGHT CARD COLUMN: Animated Dynamic Content Canvas taking full width */}
+        <div className="bg-white border border-slate-100 rounded-[2.5rem] shadow-sm relative overflow-hidden flex flex-col min-h-[600px]">
           {/* Accent Line Block Top Gradient Design Frame Element */}
           <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600" />
           
