@@ -83,3 +83,13 @@ export const updatePackageCurrentPriceApi = async (slug: string, currentPrice: n
         throw "Something went wrong";
     }
 };
+
+export const getPackagesPageSections = async () => {
+    const response = await api.get(`/content/packages-page/sections`);
+    return response.data.data;
+};
+
+export const updatePackagesPageSections = async (data: { customSections: any[] }) => {
+    const response = await api.post(`/content/packages-page/sections`, data);
+    return response.data;
+};

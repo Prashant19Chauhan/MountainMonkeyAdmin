@@ -107,3 +107,13 @@ export const updateStayCurrentPriceApi = async (slug: string, roomPrices: { type
         throw new Error("An unexpected error occurred while updating current price.");
     }
 };
+
+export const getStaysPageSections = async () => {
+    const response = await api.get(`/content/stays-page/sections`);
+    return response.data.data;
+};
+
+export const updateStaysPageSections = async (data: { customSections: any[] }) => {
+    const response = await api.post(`/content/stays-page/sections`, data);
+    return response.data;
+};

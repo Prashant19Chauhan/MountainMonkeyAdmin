@@ -69,6 +69,10 @@ const menuSections = [
     title: "System",
     items: [
       { label: "Home Page", href: "/home-management", icon: LayoutDashboard },
+      { label: "Destinations Page", href: "/destinations-management", icon: MapPin },
+      { label: "Packages Page", href: "/packages-management", icon: Package },
+      { label: "Stays Page", href: "/stays-management", icon: Hotel },
+      { label: "Activities Page", href: "/activities-management", icon: Activity },
       { label: "Theme Studio", href: "/theme-studio", icon: Sparkles },
     ],
   },

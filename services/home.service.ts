@@ -10,6 +10,11 @@ export const updateHomeHeroSection = async (data: any) => {
     return response.data;
 };
 
+export const updateHomeCustomSections = async (data: { customSections: any[] }) => {
+    const response = await api.post(`/content/home/custom-sections`, data);
+    return response.data;
+};
+
 // Advertisement APIs
 export const getAllAdvertisements = async () => {
     const response = await api.get(`/advertisement`);

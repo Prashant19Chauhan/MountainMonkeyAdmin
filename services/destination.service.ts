@@ -64,3 +64,23 @@ export const deleteDestinationApi = async (slug: string) => {
         throw "Something went wrong";
     }
 }
+
+export const getDestinationsPageSections = async () => {
+    const response = await api.get(`/content/destinations-page/sections`);
+    return response.data.data;
+};
+
+export const updateDestinationsPageSections = async (data: { customSections: any[] }) => {
+    const response = await api.post(`/content/destinations-page/sections`, data);
+    return response.data;
+};
+
+export const getDestinationDetailSectionsApi = async (slug: string) => {
+    const response = await api.get(`/destinations/${slug}/detail-sections`);
+    return response.data.data;
+};
+
+export const updateDestinationDetailSectionsApi = async (slug: string, data: { customSections: any[] }) => {
+    const response = await api.post(`/destinations/${slug}/detail-sections`, data);
+    return response.data;
+};

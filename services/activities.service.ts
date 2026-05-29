@@ -124,3 +124,13 @@ export const updateActivityCurrentPriceApi = async (slug: string, currentPrice: 
         return handleApiError(error);
     }
 }
+
+export const getActivitiesPageSections = async () => {
+    const response = await api.get(`/content/activities-page/sections`);
+    return response.data.data;
+};
+
+export const updateActivitiesPageSections = async (data: { customSections: any[] }) => {
+    const response = await api.post(`/content/activities-page/sections`, data);
+    return response.data;
+};
