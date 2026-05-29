@@ -27,7 +27,8 @@ import {
   ChevronRight,
   ShieldCheck,
   Bell,
-  Sparkles
+  Sparkles,
+  HelpCircle
 } from "lucide-react";
 
 const menuSections = [
@@ -36,6 +37,7 @@ const menuSections = [
     items: [
       { label: "Dashboard", href: "/", icon: LayoutDashboard },
       { label: "Analytics", href: "/analytics", icon: LineChart },
+      { label: "Enquiries", href: "/enquiries", icon: HelpCircle },
     ],
   },
   {

@@ -96,9 +96,9 @@ export const deleteStayApi = async (slug: string) => {
     }
 }
 
-export const updateStayCurrentPriceApi = async (slug: string, currentPrice: number) => {
+export const updateStayCurrentPriceApi = async (slug: string, roomPrices: { typeOfRoom: string; currentPrice: number }[]) => {
     try {
-        const response = await api.patch(`/stay/${slug}/current-price`, { currentPrice });
+        const response = await api.patch(`/stay/${slug}/current-price`, { roomPrices });
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {

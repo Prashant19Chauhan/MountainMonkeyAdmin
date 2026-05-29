@@ -18,6 +18,7 @@ export interface StayRoom {
   amenities?: string[];
   availability?: RoomAvailability;
   roomImages?: string[];
+  currentPrice?: number;
 }
 
 export interface StayPolicy {

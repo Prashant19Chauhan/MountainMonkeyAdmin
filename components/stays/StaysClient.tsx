@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, Download, Building2, Percent, Clock, DollarSign } from 'lucide-react';
 import Link from 'next/link';
 
@@ -10,10 +10,15 @@ import { StaysFilter } from '@/components/stays/StaysFilter';
 import { StaysTable } from '@/components/stays/StaysTable';
 import { StaysPagination } from '@/components/stays/StaysPagination';
 import DeleteDialog from '@/components/mainComponents/deleteDialog';
+import { RoomPriceModal } from '@/components/stays/RoomPriceModal';
+import { Stay } from '@/types/type';
 
 const StaysClient = () => {
   const stayHook = useStay();
   
+  const [selectedStay, setSelectedStay] = useState<Stay | null>(null);
+  const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
+
   const {
     staysData,
     isStaysLoading,
@@ -37,6 +42,23 @@ const StaysClient = () => {
     { label: 'Pending Approvals', value: '18', trend: '-3% this week', icon: <Clock className="w-4 h-4 text-slate-500" />, negative: true },
     { label: 'Avg. Nightly Rate', value: '$245', trend: '+4% this quarter', icon: <DollarSign className="w-4 h-4 text-slate-500" /> },
   ];
+
+  const handleUpdatePriceClick = (stay: Stay) => {
+    setSelectedStay(stay);
+    setIsPriceModalOpen(true);
+  };
+
+  const handleSavePrices = (slug: string, roomPrices: { typeOfRoom: string; currentPrice: number }[]) => {
+    updateStayCurrentPrice(
+      { id: slug, roomPrices },
+      {
+        onSuccess: () => {
+          setIsPriceModalOpen(false);
+          setSelectedStay(null);
+        },
+      }
+    );
+  };
 
   const handleDeleteClick = (id: string) => {
     setDeleteId(id);
@@ -87,7 +109,7 @@ const StaysClient = () => {
           stays={stays} 
           isStaysLoading={isStaysLoading} 
           onDeleteClick={handleDeleteClick} 
-          onUpdatePrice={(id: string, price: number) => updateStayCurrentPrice({ id, price })}
+          onUpdatePriceClick={handleUpdatePriceClick}
         />
         
         <StaysPagination 
@@ -103,6 +125,17 @@ const StaysClient = () => {
         onClose={() => setIsDeleteDialogOpen(false)}
         onConfirm={confirmDelete}
         isLoading={false}
+      />
+
+      <RoomPriceModal
+        isOpen={isPriceModalOpen}
+        onClose={() => {
+          setIsPriceModalOpen(false);
+          setSelectedStay(null);
+        }}
+        stay={selectedStay}
+        isPending={stayHook.isUpdatePriceLoading}
+        onSave={handleSavePrices}
       />
     </div>
   );

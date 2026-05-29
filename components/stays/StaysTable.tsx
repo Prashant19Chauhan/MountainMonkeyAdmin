@@ -58,10 +58,10 @@ interface StaysTableProps {
   stays: Stay[];
   isStaysLoading: boolean;
   onDeleteClick: (slug: string) => void;
-  onUpdatePrice: (slug: string, price: number) => void;
+  onUpdatePriceClick: (stay: Stay) => void;
 }
 
-export const StaysTable = ({ stays, isStaysLoading, onDeleteClick, onUpdatePrice }: StaysTableProps) => {
+export const StaysTable = ({ stays, isStaysLoading, onDeleteClick, onUpdatePriceClick }: StaysTableProps) => {
   return (
     <div className="overflow-x-auto min-h-[400px] relative">
       {isStaysLoading && (
@@ -75,8 +75,7 @@ export const StaysTable = ({ stays, isStaysLoading, onDeleteClick, onUpdatePrice
           <tr className="text-[10px] uppercase tracking-widest font-black text-slate-400 border-b border-slate-50 bg-slate-50/30">
             <th className="px-6 py-4">Property Identity</th>
             <th className="px-6 py-4">Category & Quality</th>
-            <th className="px-6 py-4">Price Range</th>
-            <th className="px-6 py-4">Current Price</th>
+            <th className="px-6 py-4">Room Pricing Configurations</th>
             <th className="px-6 py-4">Visibility</th>
             <th className="px-6 py-4 text-right pr-10">Actions</th>
           </tr>
@@ -116,19 +115,29 @@ export const StaysTable = ({ stays, isStaysLoading, onDeleteClick, onUpdatePrice
                 </div>
               </td>
               <td className="px-6 py-5">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-sm font-bold text-slate-500">₹{property.priceRange?.min || 0} - ₹{property.priceRange?.max || 0}</span>
+                <div className="flex flex-wrap gap-2 max-w-lg">
+                  {property.rooms && property.rooms.length > 0 ? (
+                    property.rooms.map((room) => (
+                      <div 
+                        key={room.typeOfRoom} 
+                        className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 hover:border-slate-200 hover:bg-slate-100/50 transition-all rounded-lg px-2.5 py-1 text-[11px] font-semibold text-slate-700 font-sans cursor-help"
+                        title={`Base Price Range: ₹${room.pricePerNight?.min || 0} - ₹${room.pricePerNight?.max || 0}`}
+                      >
+                        <span className="text-slate-400 font-extrabold uppercase text-[9px] tracking-wider">{room.typeOfRoom}</span>
+                        <span className="w-1 h-2 bg-slate-200 rounded-full shrink-0" />
+                        <span className="font-black text-slate-900">₹{(room.currentPrice || 0).toLocaleString('en-IN')}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <span className="text-slate-400 text-xs italic">No Rooms configured</span>
+                  )}
                 </div>
-                <div className="text-[10px] text-slate-400 font-medium">Avg. Price / Night</div>
-              </td>
-              <td className="px-6 py-5">
-                <InlinePriceUpdater 
-                  id={property.slug || ""} 
-                  initialPrice={property.currentPrice || 0} 
-                  currency="₹" 
-                  onUpdate={onUpdatePrice}
-                />
-                <div className="text-[10px] text-slate-400 font-medium mt-0.5">Active Rate</div>
+                <button
+                  onClick={() => onUpdatePriceClick(property)}
+                  className="mt-2.5 flex items-center gap-1 text-[10px] font-black text-blue-600 hover:text-blue-700 hover:underline uppercase tracking-wider cursor-pointer border-0 bg-transparent active:scale-95 transition-all"
+                >
+                  <Edit2 size={10} /> Edit Rates
+                </button>
               </td>
               <td className="px-6 py-5">
                 <span className={`px-2 py-0.5 rounded text-[10px] font-black tracking-wider border ${property.isActive ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-100 text-slate-400 border-slate-200'

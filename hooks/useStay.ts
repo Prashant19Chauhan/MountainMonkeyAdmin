@@ -141,9 +141,10 @@ export default function useStay() {
     });
 
     const { mutate: updateStayCurrentPrice, isPending: isUpdatePriceLoading } = useMutation({
-        mutationFn: ({ id, price }: { id: string; price: number }) => updateStayCurrentPriceApi(id, price),
+        mutationFn: ({ id, roomPrices }: { id: string; roomPrices: { typeOfRoom: string; currentPrice: number }[] }) =>
+            updateStayCurrentPriceApi(id, roomPrices),
         onSuccess: () => {
-            toast.success("Stay price updated successfully");
+            toast.success("Stay room prices updated successfully");
             queryClient.invalidateQueries({ queryKey: ["stays"] });
         },
         onError: (error: any) => {
