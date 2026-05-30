@@ -84,7 +84,7 @@ const DashboardClient = () => {
     };
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] text-slate-900">
+    <div className="min-h-screen text-slate-900">
       
       {/* Premium Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">

@@ -43,7 +43,7 @@ const PackagesClient = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8 font-sans text-slate-900">
+    <div className="min-h-screen bg-slate-50 p-1 font-sans text-slate-900">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>

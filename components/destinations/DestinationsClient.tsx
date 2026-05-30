@@ -62,7 +62,7 @@ const DestinationsClient = () => {
   }
 
   return (
-    <div className="space-y-6 md:space-y-8 p-4 md:p-8 bg-slate-50/50 min-h-screen">
+    <div className="space-y-6 md:space-y-8 p-1 md:p-8 bg-slate-50/50 min-h-screen">
       {/* Top Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
         <div>

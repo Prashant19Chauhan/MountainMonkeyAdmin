@@ -16,12 +16,9 @@ function AdminDashboardLayout({
 
                 {/* Main Content Wrapper: Vertical stack for Header, Main, and Footer */}
                 <div className='flex flex-col flex-1 overflow-y-auto'>
-                    <main className='flex-1 p-4 pt-20 md:p-8'>
+                    <main className='flex-1 p-4 pt-20 md:p-1'>
                         {children}
                     </main>
-
-
-                    <AdminFooter />
                 </div>
             </ProtectedRoutesProvider>
         </div>
