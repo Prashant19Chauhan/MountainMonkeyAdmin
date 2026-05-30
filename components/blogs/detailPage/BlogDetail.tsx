@@ -2,25 +2,24 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import useActivity from '@/hooks/useActivity';
 import { 
-  Loader2, XCircle, Plus, Save, Trash2, ArrowUp, ArrowDown, 
+  XCircle, Loader2, Plus, Save, Trash2, ArrowUp, ArrowDown, 
   RefreshCcw, Type, Link as LinkIcon, HelpCircle, 
-  Image as ImageIcon, Layers 
+  Image as ImageIcon, Layers, FileText, Calendar, User, Edit3
 } from 'lucide-react';
-import ActivityHeader from './ActivityHeader';
-import ActivitySidebar from './ActivitySidebar';
-import ActivityTabs from './ActivityTabs';
 import Image from '@/components/ui/Image';
-import { getActivityDetailSectionsApi, updateActivityDetailSectionsApi } from '@/services/activities.service';
+import { getBlogApi, getBlogDetailSectionsApi, updateBlogDetailSectionsApi } from '@/services/blog.service';
 import { toast } from 'sonner';
+import Link from 'next/link';
 
-export default function ActivityDetail() {
+export default function BlogDetail() {
   const params = useParams();
   const router = useRouter();
-  const activityId = params.activity as string;
+  const blogId = params.blog as string;
 
-  const { setEditActivityId, formData: activity, isSingleActivityLoading: isLoading, citiesData, destinationsData } = useActivity();
+  // Blog Info state
+  const [blog, setBlog] = useState<any>(null);
+  const [blogLoading, setBlogLoading] = useState(true);
 
   // CMS state
   const [customSections, setCustomSections] = useState<any[]>([]);
@@ -31,13 +30,27 @@ export default function ActivityDetail() {
   const [newFaqQuestions, setNewFaqQuestions] = useState<{[k: number]: string}>({});
   const [newFaqAnswers, setNewFaqAnswers] = useState<{[k: number]: string}>({});
 
-  // Fetch CMS sections when activityId (slug) is known
+  const fetchBlogData = async () => {
+    if (!blogId) return;
+    setBlogLoading(true);
+    try {
+      const res = await getBlogApi(blogId);
+      if (res && res.data) {
+        setBlog(res.data);
+      }
+    } catch (err: any) {
+      toast.error("Failed to load blog article parameters");
+    } finally {
+      setBlogLoading(false);
+    }
+  };
+
   const fetchCmsSections = async () => {
-    if (!activityId) return;
+    if (!blogId) return;
     setCmsLoading(true);
     try {
-      const data = await getActivityDetailSectionsApi(activityId);
-      setCustomSections(data?.customSections || []);
+      const data = await getBlogDetailSectionsApi(blogId);
+      setCustomSections(data?.data?.customSections || data?.customSections || []);
     } catch {
       setCustomSections([]);
     } finally {
@@ -46,8 +59,9 @@ export default function ActivityDetail() {
   };
 
   useEffect(() => {
+    fetchBlogData();
     fetchCmsSections();
-  }, [activityId]);
+  }, [blogId]);
 
   // CMS helpers
   const updateSectionField = (sIdx: number, field: string, value: any) => {
@@ -55,12 +69,14 @@ export default function ActivityDetail() {
     updated[sIdx] = { ...updated[sIdx], [field]: value };
     setCustomSections(updated);
   };
+
   const addImage = (sIdx: number) => {
     const url = newImageUrls[sIdx]?.trim();
     if (!url) return;
     updateSectionField(sIdx, 'images', [...(customSections[sIdx].images || []), url]);
     setNewImageUrls({ ...newImageUrls, [sIdx]: '' });
   };
+
   const removeImage = (sIdx: number, iIdx: number) =>
     updateSectionField(sIdx, 'images', customSections[sIdx].images.filter((_: any, i: number) => i !== iIdx));
 
@@ -72,6 +88,7 @@ export default function ActivityDetail() {
     setNewLinkTexts({ ...newLinkTexts, [sIdx]: '' });
     setNewLinkUrls({ ...newLinkUrls, [sIdx]: '' });
   };
+
   const removeLink = (sIdx: number, lIdx: number) =>
     updateSectionField(sIdx, 'links', customSections[sIdx].links.filter((_: any, i: number) => i !== lIdx));
 
@@ -83,6 +100,7 @@ export default function ActivityDetail() {
     setNewFaqQuestions({ ...newFaqQuestions, [sIdx]: '' });
     setNewFaqAnswers({ ...newFaqAnswers, [sIdx]: '' });
   };
+
   const removeFaq = (sIdx: number, fIdx: number) =>
     updateSectionField(sIdx, 'faq', customSections[sIdx].faq.filter((_: any, i: number) => i !== fIdx));
 
@@ -93,109 +111,123 @@ export default function ActivityDetail() {
     [updated[sIdx], updated[target]] = [updated[target], updated[sIdx]];
     setCustomSections(updated);
   };
+
   const createSection = () =>
-    setCustomSections([...customSections, { heading: 'New Section', paragraph: 'Describe this section...', images: [], links: [], faq: [] }]);
+    setCustomSections([...customSections, { heading: 'New Rich Detail Block', paragraph: 'Describe this details block...', images: [], links: [], faq: [] }]);
 
   const removeSection = (sIdx: number) => {
-    if (window.confirm('Delete this section?')) setCustomSections(customSections.filter((_, i) => i !== sIdx));
+    if (window.confirm('Delete this section block?')) setCustomSections(customSections.filter((_, i) => i !== sIdx));
   };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateActivityDetailSectionsApi(activityId, { customSections });
-      toast.success('Custom sections saved!');
+      await updateBlogDetailSectionsApi(blogId, customSections);
+      toast.success('Blog custom sections saved successfully!');
       fetchCmsSections();
     } catch (err: any) {
       toast.error(err?.message || 'Failed to save sections');
     }
   };
 
-  useEffect(() => {
-    if (activityId) {
-      setEditActivityId(activityId);
-    }
-  }, [activityId, setEditActivityId]);
-
-  if (isLoading) {
+  if (blogLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 gap-4">
         <Loader2 className="w-12 h-12 animate-spin text-slate-900" />
-        <p className="text-slate-400 font-black text-xs uppercase tracking-widest">Loading Adventure...</p>
+        <p className="text-slate-400 font-black text-xs uppercase tracking-widest">Opening Article Workspace...</p>
       </div>
     );
   }
 
-  if (!activity || !activity.name) {
+  if (!blog) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 gap-4 p-4 text-center">
         <XCircle className="w-16 h-16 text-rose-500" />
-        <h2 className="text-2xl font-black text-slate-800">Failed to load activity</h2>
+        <h2 className="text-2xl font-black text-slate-800">Failed to load article</h2>
         <p className="text-slate-500 italic text-sm max-w-md">
-          The requested tour activity details could not be loaded.
+          The requested article could not be retrieved from the database registry.
         </p>
         <button
-          onClick={() => router.push('/activities')}
-          className="mt-4 px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-black transition-all"
+          onClick={() => router.push('/blogs')}
+          className="mt-4 px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-black transition-all border-0 cursor-pointer"
         >
-          Back to Activities
+          Back to Articles
         </button>
       </div>
     );
   }
 
-  const destinationIdAny = activity.destinationId as any;
-  const destinationName = typeof destinationIdAny === 'object' 
-    ? destinationIdAny?.name 
-    : (destinationsData?.data?.find((d: any) => d._id === activity.destinationId)?.name || 'Global Scope');
-    
-  const mainCityAny = activity.location?.mainCity as any;
-  const mainCityName = typeof mainCityAny === 'object' 
-    ? mainCityAny?.name 
-    : (citiesData?.data?.find((c: any) => c._id === activity.location?.mainCity)?.name || 'Not Specified');
-
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8 font-sans text-slate-800">
-      {/* Main Container */}
-      <div className="max-w-7xl mx-auto">
-        <ActivityHeader activity={activity} onBack={() => router.push('/activities')} />
-
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
-          {/* Left Column: Visuals & Mapped Details */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Quick Metrics Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <MetricCard 
-                title="Duration" 
-                value={activity.timing?.duration ? `${activity.timing.duration} Mins` : 'Flexible'} 
-              />
-              <MetricCard 
-                title="Age Limit" 
-                value={activity.ageLimit ? `${activity.ageLimit.min} - ${activity.ageLimit.max} Yrs` : 'All Ages'} 
-              />
-              <MetricCard 
-                title="Stamina Level" 
-                value={activity.difficultyLevel || 'Moderate'} 
-                highlight={true} 
-              />
-              <MetricCard 
-                title="Risk Profile" 
-                value={activity.safetyInfo?.riskLevel || 'Low'} 
-                alert={activity.safetyInfo?.riskLevel === 'high'} 
-              />
+    <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8 font-sans text-slate-800 text-left">
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        {/* Header Block */}
+        <div className="bg-white p-6 sm:p-8 rounded-[3rem] border border-slate-200 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="flex items-center gap-5">
+            <div className="w-20 h-16 rounded-2xl border border-slate-100 overflow-hidden shadow-2xs bg-slate-100 shrink-0">
+              {blog.coverImage ? (
+                <img src={blog.coverImage} alt={blog.title} className="w-full h-full object-cover" />
+              ) : (
+                <FileText className="w-full h-full p-4 text-slate-300" />
+              )}
             </div>
-
-            <ActivityTabs activity={activity} />
+            <div>
+              <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-lg text-indigo-600">
+                  {blog.category}
+                </span>
+                <span className="text-[10px] font-black uppercase tracking-widest bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg text-slate-500">
+                  {blog.status}
+                </span>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight max-w-xl">{blog.title}</h1>
+            </div>
           </div>
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <Link href={`/metadata?blog=${blog._id}`} className="flex-1 md:flex-initial">
+              <button className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl font-black text-xs uppercase tracking-widest text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <Edit3 size={15} /> SEO Meta
+              </button>
+            </Link>
+            <button
+              onClick={() => router.push('/blogs')}
+              className="flex-1 md:flex-initial px-5 py-3 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all cursor-pointer border-0"
+            >
+              Back to Articles
+            </button>
+          </div>
+        </div>
 
-          {/* Right Column: Pricing, AI Scores, and Location info */}
-          <div className="space-y-6">
-            <ActivitySidebar 
-              activity={activity} 
-              destinationName={destinationName} 
-              mainCityName={mainCityName} 
-            />
+        {/* Article Summary Sidebar info in Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-2xs">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 text-indigo-500">
+              <User size={18} />
+            </div>
+            <div>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Author Profile</p>
+              <p className="font-extrabold text-sm text-slate-800">{blog.author || "MountainMonkey"}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 text-indigo-500">
+              <Calendar size={18} />
+            </div>
+            <div>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Publish Date</p>
+              <p className="font-extrabold text-sm text-slate-800">
+                {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 text-indigo-500">
+              <FileText size={18} />
+            </div>
+            <div>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Catchphrase Description</p>
+              <p className="font-bold text-xs text-slate-500 truncate max-w-[250px]" title={blog.shortDescription}>{blog.shortDescription}</p>
+            </div>
           </div>
         </div>
 
@@ -207,8 +239,8 @@ export default function ActivityDetail() {
                 <Layers size={20} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Custom Detail Sections</h2>
-                <p className="text-slate-500 font-medium text-sm">Add rich content blocks shown at the bottom of this activity&apos;s detail page.</p>
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Blog Narrative Sections CMS</h2>
+                <p className="text-slate-500 font-medium text-sm">Add rich paragraphs, image galleries, action links, and FAQs mapping to this blog post.</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -216,7 +248,7 @@ export default function ActivityDetail() {
                 <RefreshCcw size={18} className={cmsLoading ? 'animate-spin' : ''} />
               </button>
               <button type="button" onClick={createSection} className="px-5 py-2.5 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all flex items-center gap-2 cursor-pointer border-0">
-                <Plus size={15} /> Add Block
+                <Plus size={15} /> Add Detail Section
               </button>
             </div>
           </div>
@@ -225,7 +257,7 @@ export default function ActivityDetail() {
             <div className="bg-white rounded-3xl border border-slate-100 p-14 text-center text-slate-400 shadow-sm space-y-3">
               <Layers size={44} className="mx-auto text-slate-300 animate-pulse" />
               <p className="font-bold text-sm uppercase tracking-widest">No custom sections yet</p>
-              <p className="text-slate-500 text-xs font-medium max-w-xs mx-auto">Click &quot;Add Block&quot; to build engaging content for this activity&apos;s detail page.</p>
+              <p className="text-slate-500 text-xs font-medium max-w-xs mx-auto">Click &quot;Add Detail Section&quot; to build rich layouts (checklists, faq details, galleries) below the main blog narrative.</p>
             </div>
           ) : (
             <form onSubmit={handleSave} className="space-y-8">
@@ -244,21 +276,21 @@ export default function ActivityDetail() {
                     </button>
                   </div>
 
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 block mb-5">Block #{sIdx + 1}</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 block mb-5">Section Block #{sIdx + 1}</span>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Left: Text + Images */}
                     <div className="space-y-5">
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Type size={13} className="text-indigo-500" /> Heading</label>
-                        <input type="text" required value={section.heading} onChange={(e) => updateSectionField(sIdx, 'heading', e.target.value)} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-800 text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/10" placeholder="Section heading..." />
+                        <input type="text" required value={section.heading} onChange={(e) => updateSectionField(sIdx, 'heading', e.target.value)} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-800 text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/10" placeholder="e.g. Essential Gear Guide..." />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Paragraph</label>
-                        <textarea required value={section.paragraph} onChange={(e) => updateSectionField(sIdx, 'paragraph', e.target.value)} rows={4} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-800 text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/10 resize-none" placeholder="Section paragraph..." />
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Paragraph Content</label>
+                        <textarea required value={section.paragraph} onChange={(e) => updateSectionField(sIdx, 'paragraph', e.target.value)} rows={4} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-800 text-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/10 resize-none" placeholder="Provide details, safety warnings, altitude highlights..." />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><ImageIcon size={13} className="text-indigo-500" /> Images</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><ImageIcon size={13} className="text-indigo-500" /> Gallery Images</label>
                         <div className="flex gap-2">
                           <input type="text" value={newImageUrls[sIdx] || ''} onChange={(e) => setNewImageUrls({ ...newImageUrls, [sIdx]: e.target.value })} className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-slate-800 focus:outline-none" placeholder="Image URL..." onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addImage(sIdx))} />
                           <button type="button" onClick={() => addImage(sIdx)} className="px-4 bg-indigo-500 text-white rounded-xl text-xs font-black border-0 cursor-pointer hover:bg-indigo-600">Add</button>
@@ -279,13 +311,13 @@ export default function ActivityDetail() {
                     {/* Right: Links + FAQs */}
                     <div className="space-y-5">
                       <div className="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 space-y-3">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><LinkIcon size={13} className="text-indigo-500" /> Links</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><LinkIcon size={13} className="text-indigo-500" /> Action Links Badges</label>
                         <div className="grid grid-cols-2 gap-2">
-                          <input type="text" value={newLinkTexts[sIdx] || ''} onChange={(e) => setNewLinkTexts({ ...newLinkTexts, [sIdx]: e.target.value })} className="px-3.5 py-2.5 bg-white border border-slate-100 rounded-xl font-bold text-slate-800 text-[11px] focus:outline-none" placeholder="Label" />
-                          <input type="text" value={newLinkUrls[sIdx] || ''} onChange={(e) => setNewLinkUrls({ ...newLinkUrls, [sIdx]: e.target.value })} className="px-3.5 py-2.5 bg-white border border-slate-100 rounded-xl font-bold text-slate-800 text-[11px] focus:outline-none" placeholder="URL" />
+                          <input type="text" value={newLinkTexts[sIdx] || ''} onChange={(e) => setNewLinkTexts({ ...newLinkTexts, [sIdx]: e.target.value })} className="px-3.5 py-2.5 bg-white border border-slate-100 rounded-xl font-bold text-slate-800 text-[11px] focus:outline-none" placeholder="Link Label (e.g., Get Trekking Permits)" />
+                          <input type="text" value={newLinkUrls[sIdx] || ''} onChange={(e) => setNewLinkUrls({ ...newLinkUrls, [sIdx]: e.target.value })} className="px-3.5 py-2.5 bg-white border border-slate-100 rounded-xl font-bold text-slate-800 text-[11px] focus:outline-none" placeholder="Target URL" />
                         </div>
                         <button type="button" onClick={() => addLink(sIdx)} className="w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1 border-0 cursor-pointer">
-                          <Plus size={11} /> Add Link
+                          <Plus size={11} /> Add Action badge
                         </button>
                         <div className="flex flex-wrap gap-1.5">
                           {(section.links || []).map((link: any, lIdx: number) => (
@@ -298,13 +330,13 @@ export default function ActivityDetail() {
                       </div>
 
                       <div className="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 space-y-3">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><HelpCircle size={13} className="text-indigo-500" /> FAQ Pairs</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><HelpCircle size={13} className="text-indigo-500" /> Q&A FAQ Accordion pairs</label>
                         <div className="space-y-2">
-                          <input type="text" value={newFaqQuestions[sIdx] || ''} onChange={(e) => setNewFaqQuestions({ ...newFaqQuestions, [sIdx]: e.target.value })} className="w-full px-3.5 py-2.5 bg-white border border-slate-100 rounded-xl font-bold text-slate-800 text-[11px] focus:outline-none" placeholder="Question..." />
+                          <input type="text" value={newFaqQuestions[sIdx] || ''} onChange={(e) => setNewFaqQuestions({ ...newFaqQuestions, [sIdx]: e.target.value })} className="w-full px-3.5 py-2.5 bg-white border border-slate-100 rounded-xl font-bold text-slate-800 text-[11px] focus:outline-none" placeholder="Question?" />
                           <textarea value={newFaqAnswers[sIdx] || ''} onChange={(e) => setNewFaqAnswers({ ...newFaqAnswers, [sIdx]: e.target.value })} rows={2} className="w-full px-3.5 py-2.5 bg-white border border-slate-100 rounded-xl font-bold text-slate-800 text-[11px] resize-none focus:outline-none" placeholder="Answer..." />
                         </div>
                         <button type="button" onClick={() => addFaq(sIdx)} className="w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1 border-0 cursor-pointer">
-                          <Plus size={11} /> Add FAQ
+                          <Plus size={11} /> Add Q&A Accordion
                         </button>
                         <div className="space-y-1.5 max-h-32 overflow-y-auto">
                           {(section.faq || []).map((faq: any, fIdx: number) => (
@@ -320,28 +352,12 @@ export default function ActivityDetail() {
                 </div>
               ))}
               <button type="submit" className="w-full py-5 bg-slate-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer border-0">
-                <Save size={19} /> Save Custom Sections
+                <Save size={19} /> Save Detail Sections
               </button>
             </form>
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-// Helper Component for Metrics
-function MetricCard({ title, value, highlight, alert }: { title: string; value: string; highlight?: boolean; alert?: boolean }) {
-  return (
-    <div className={`p-4 rounded-2xl border text-center shadow-sm hover:shadow-md transition-all ${
-      alert 
-        ? 'bg-rose-50 border-rose-100 text-rose-700' 
-        : highlight 
-        ? 'bg-indigo-50 border-indigo-100 text-indigo-700' 
-        : 'bg-white border-slate-200 text-slate-800'
-    }`}>
-      <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">{title}</div>
-      <div className="text-xs font-black uppercase mt-1 truncate">{value}</div>
     </div>
   );
 }

@@ -134,3 +134,13 @@ export const updateActivitiesPageSections = async (data: { customSections: any[]
     const response = await api.post(`/content/activities-page/sections`, data);
     return response.data;
 };
+
+export const getActivityDetailSectionsApi = async (slug: string) => {
+    const response = await api.get(`/activity/${slug}/detail-sections`);
+    return response.data.data;
+};
+
+export const updateActivityDetailSectionsApi = async (slug: string, data: { customSections: any[] }) => {
+    const response = await api.post(`/activity/${slug}/detail-sections`, data);
+    return response.data;
+};

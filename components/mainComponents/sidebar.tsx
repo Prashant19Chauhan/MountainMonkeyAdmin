@@ -28,7 +28,8 @@ import {
   ShieldCheck,
   Bell,
   Sparkles,
-  HelpCircle
+  HelpCircle,
+  Mail
 } from "lucide-react";
 
 const menuSections = [
@@ -38,6 +39,7 @@ const menuSections = [
       { label: "Dashboard", href: "/", icon: LayoutDashboard },
       { label: "Analytics", href: "/analytics", icon: LineChart },
       { label: "Enquiries", href: "/enquiries", icon: HelpCircle },
+      { label: "Contact Messages", href: "/contact-messages", icon: Mail },
     ],
   },
   {
@@ -73,6 +75,12 @@ const menuSections = [
       { label: "Packages Page", href: "/packages-management", icon: Package },
       { label: "Stays Page", href: "/stays-management", icon: Hotel },
       { label: "Activities Page", href: "/activities-management", icon: Activity },
+      { label: "About Us Page", href: "/about-management", icon: Users },
+      { label: "FAQ Page", href: "/faq-management", icon: HelpCircle },
+      { label: "Terms Page", href: "/terms-management", icon: FileText },
+      { label: "Privacy Policy Page", href: "/privacy-management", icon: ShieldCheck },
+      { label: "Cities Page", href: "/cities-management", icon: Globe },
+      { label: "Blogs Page", href: "/blogs-management", icon: FileText },
       { label: "Theme Studio", href: "/theme-studio", icon: Sparkles },
     ],
   },

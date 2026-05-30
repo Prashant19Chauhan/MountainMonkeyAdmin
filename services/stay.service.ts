@@ -117,3 +117,13 @@ export const updateStaysPageSections = async (data: { customSections: any[] }) =
     const response = await api.post(`/content/stays-page/sections`, data);
     return response.data;
 };
+
+export const getStayDetailSectionsApi = async (slug: string) => {
+    const response = await api.get(`/stay/${slug}/detail-sections`);
+    return response.data.data;
+};
+
+export const updateStayDetailSectionsApi = async (slug: string, data: { customSections: any[] }) => {
+    const response = await api.post(`/stay/${slug}/detail-sections`, data);
+    return response.data;
+};

@@ -93,3 +93,13 @@ export const updatePackagesPageSections = async (data: { customSections: any[] }
     const response = await api.post(`/content/packages-page/sections`, data);
     return response.data;
 };
+
+export const getPackageDetailSectionsApi = async (slug: string) => {
+    const response = await api.get(`/packages/${slug}/detail-sections`);
+    return response.data.data;
+};
+
+export const updatePackageDetailSectionsApi = async (slug: string, data: { customSections: any[] }) => {
+    const response = await api.post(`/packages/${slug}/detail-sections`, data);
+    return response.data;
+};

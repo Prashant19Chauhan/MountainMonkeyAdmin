@@ -2,6 +2,7 @@
 
 import Image from "@/components/ui/Image";
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   getStaysPageSections, 
   updateStaysPageSections
@@ -18,7 +19,8 @@ import {
   ArrowUp,
   ArrowDown,
   HelpCircle,
-  Hotel
+  Hotel,
+  Edit3
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
@@ -171,12 +173,19 @@ export default function StaysManagementPage() {
           </div>
           <p className="text-slate-500 font-medium">Manage experiential content and FAQ accordions for the all-stays list page.</p>
         </div>
-        <button 
-          onClick={fetchPageData}
-          className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-600 hover:text-indigo-600 transition-all shadow-sm cursor-pointer border-0"
-        >
-          <RefreshCcw size={20} className={loading ? "animate-spin" : ""} />
-        </button>
+        <div className="flex items-center gap-3">
+          <Link href="/metadata?stays-page=stays-page">
+            <button className="px-4 py-2.5 bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-black transition-all flex items-center gap-2 cursor-pointer border-0">
+              <Edit3 size={14} /> SEO Meta
+            </button>
+          </Link>
+          <button 
+            onClick={fetchPageData}
+            className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-600 hover:text-indigo-600 transition-all shadow-sm cursor-pointer border-0"
+          >
+            <RefreshCcw size={20} className={loading ? "animate-spin" : ""} />
+          </button>
+        </div>
       </div>
 
       <motion.div

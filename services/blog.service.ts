@@ -1,11 +1,9 @@
 import { api } from "@/lib/api";
-import { CityInput } from "@/lib/validation/city.validation";
 import { AxiosError } from "axios";
 
-
-export const createCityApi = async (formData: CityInput) => {
+export const createBlogApi = async (formData: any) => {
     try {
-        const response = await api.post("/locations/", formData);
+        const response = await api.post("/blogs/", formData);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -15,9 +13,9 @@ export const createCityApi = async (formData: CityInput) => {
     }
 }
 
-export const getCitiesApi = async (page: number, limit: number, search?: string) => {
+export const getBlogsApi = async (page: number, limit: number, search?: string) => {
     try {
-        const response = await api.get(`/locations/?page=${page}&limit=${limit}&search=${search || ""}`);
+        const response = await api.get(`/blogs/?page=${page}&limit=${limit}&search=${search || ""}`);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -27,10 +25,9 @@ export const getCitiesApi = async (page: number, limit: number, search?: string)
     }
 }
 
-
-export const deleteCityApi = async (cityId: string) => {
+export const deleteBlogApi = async (blogId: string) => {
     try {
-        const response = await api.delete(`/locations/${cityId}`);
+        const response = await api.delete(`/blogs/${blogId}`);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -40,10 +37,9 @@ export const deleteCityApi = async (cityId: string) => {
     }
 }
 
-export const updateCityApi = async (formData: CityInput) => {
+export const updateBlogApi = async (blogId: string, formData: any) => {
     try {
-        const { _id, ...updateData } = formData;
-        const response = await api.put(`/locations/${_id}`, updateData);
+        const response = await api.put(`/blogs/${blogId}`, formData);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -53,11 +49,9 @@ export const updateCityApi = async (formData: CityInput) => {
     }
 }
 
-
-export const getCityApi = async (cityId: string) => {
-
+export const getBlogApi = async (blogId: string) => {
     try {
-        const response = await api.get(`/locations/${cityId}`);
+        const response = await api.get(`/blogs/${blogId}`);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -67,9 +61,9 @@ export const getCityApi = async (cityId: string) => {
     }
 }
 
-export const getCityDetailSectionsApi = async (cityId: string) => {
+export const getBlogDetailSectionsApi = async (blogId: string) => {
     try {
-        const response = await api.get(`/locations/${cityId}/detail-sections`);
+        const response = await api.get(`/blogs/${blogId}/detail-sections`);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -79,9 +73,9 @@ export const getCityDetailSectionsApi = async (cityId: string) => {
     }
 }
 
-export const updateCityDetailSectionsApi = async (cityId: string, customSections: any[]) => {
+export const updateBlogDetailSectionsApi = async (blogId: string, customSections: any[]) => {
     try {
-        const response = await api.post(`/locations/${cityId}/detail-sections`, { customSections });
+        const response = await api.post(`/blogs/${blogId}/detail-sections`, { customSections });
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -90,5 +84,3 @@ export const updateCityDetailSectionsApi = async (cityId: string, customSections
         throw "Something went wrong";
     }
 }
-
-

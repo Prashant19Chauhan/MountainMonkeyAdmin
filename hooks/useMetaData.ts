@@ -136,7 +136,11 @@ export default function useMetaData() {
   const searchParams = useSearchParams();
 
   // Extract the page ID from any of the standard query parameter keys
-  const pageList = ["route", "stay", "package", "local-info", "destination", "city", "activity"]
+  const pageList = [
+    "route", "stay", "package", "local-info", "destination", "city", "activity", "blog",
+    "home-page", "destinations-page", "packages-page", "stays-page", "activities-page",
+    "about-page", "contact-page", "testimonials-page", "faq-page", "terms-page", "privacy-page", "cities-page", "blog-page"
+  ]
 
   let pageId: string | undefined;
   let typeOfPage: string | undefined;

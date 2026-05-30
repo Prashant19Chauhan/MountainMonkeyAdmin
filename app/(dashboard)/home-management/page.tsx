@@ -2,6 +2,7 @@
 
 import Image from "@/components/ui/Image";
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   getHomeHeroSection, 
   updateHomeHeroSection,
@@ -243,12 +244,19 @@ export default function HomeManagementPage() {
           <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">Home Control Center</h1>
           <p className="text-slate-500 font-medium">Manage exactly what users see when they land on Mountain Monkey.</p>
         </div>
-        <button 
-          onClick={fetchHomeData}
-          className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-600 hover:text-indigo-600 transition-all shadow-sm"
-        >
-          <RefreshCcw size={20} className={loading ? "animate-spin" : ""} />
-        </button>
+        <div className="flex items-center gap-3">
+          <Link href="/metadata?home-page=home-page">
+            <button className="px-4 py-2.5 bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-black transition-all flex items-center gap-2 cursor-pointer border-0">
+              <Edit3 size={14} /> SEO Meta
+            </button>
+          </Link>
+          <button 
+            onClick={fetchHomeData}
+            className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-600 hover:text-indigo-600 transition-all shadow-sm"
+          >
+            <RefreshCcw size={20} className={loading ? "animate-spin" : ""} />
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}

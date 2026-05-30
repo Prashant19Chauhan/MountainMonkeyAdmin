@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ArrowLeft, MapPin } from 'lucide-react';
+import Link from 'next/link';
 
 interface CityHeaderProps {
   city: any;
@@ -21,9 +22,18 @@ export default function CityHeader({ city, onBack }: CityHeaderProps) {
           Back to Cities
         </button>
 
-        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-white border border-slate-200 px-3.5 py-1.5 rounded-xl shadow-xs font-sans">
-          Geographic Anchor Registry
-        </span>
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/metadata?city=${city._id}`}
+            className="px-4 py-2 bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-950 rounded-xl text-xs font-bold uppercase tracking-wider shadow-sm transition-all active:scale-95"
+          >
+            SEO Meta Settings
+          </Link>
+
+          <span className="hidden sm:inline-block text-[10px] font-black uppercase tracking-widest text-slate-400 bg-white border border-slate-200 px-3.5 py-1.5 rounded-xl shadow-xs font-sans">
+            Geographic Anchor Registry
+          </span>
+        </div>
       </div>
 
       {/* Cover Summary Banner */}

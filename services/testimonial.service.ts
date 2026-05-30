@@ -7,8 +7,8 @@ export const getAllTestimonials = async (status?: string) => {
     return response.data.data;
 };
 
-export const updateTestimonialStatus = async (id: string, data: { status: 'approved' | 'rejected' | 'pending', featured?: boolean, rejectionReason?: string }) => {
-    const response = await api.patch(`/testimonial/${id}/status`, data);
+export const updateTestimonialStatus = async (id: string, data: { status: 'approved' | 'rejected' | 'pending', isFeatured?: boolean, rejectionReason?: string }) => {
+    const response = await api.put(`/testimonial/${id}/status`, data);
     return response.data.data;
 };
 

@@ -7,10 +7,25 @@ export const getAllStories = async (status?: string) => {
     return response.data.data;
 };
 
-export const updateStoryStatus = async (id: string, status: 'approved' | 'rejected' | 'pending', rejectionReason?: string) => {
-    const response = await api.patch(`/traveler-story/${id}/status`, {
+export const updateStoryStatus = async (
+    id: string, 
+    status: 'approved' | 'rejected' | 'pending', 
+    rejectionReason?: string,
+    slug?: string,
+    metaData?: { title?: string; description?: string; keywords?: string }
+) => {
+    const response = await api.put(`/traveler-story/${id}/status`, {
         status,
-        rejectionReason
+        rejectionReason,
+        slug,
+        metaData
+    });
+    return response.data.data;
+};
+
+export const checkSlugAvailability = async (slug: string, excludeId?: string) => {
+    const response = await api.get(`/traveler-story/check-slug`, {
+        params: { slug, excludeId }
     });
     return response.data.data;
 };
