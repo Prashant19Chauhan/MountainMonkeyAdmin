@@ -1,222 +1,244 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from "react"
-import { TravelRouteInput, travelRouteSchema } from "@/lib/validation/travelRoute.validation"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { 
-    createTravelRouteApi, 
-    deleteTravelRouteApi, 
-    getTravelRoutesApi, 
-    getTravelRouteByIdApi, 
-    updateTravelRouteApi,
-    getRoutesByDestinationApi
-} from "@/services/travelRoute.service"
-import { toast } from "react-toastify"
-import { getCitiesApi } from "@/services/city.service"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getCitiesApi, createCityApi } from "@/services/city.service";
+import {
+  createHubApi, getHubsApi, deleteHubApi,
+  createOperatorApi, getOperatorsApi, deleteOperatorApi,
+  createVehicleApi, getVehiclesApi, deleteVehicleApi,
+  createRouteApi, getRoutesApi, deleteRouteApi,
+  createTransferApi, getTransfersApi, deleteTransferApi,
+  createScheduleApi, getSchedulesApi, deleteScheduleApi
+} from "@/services/travelRoute.service";
+import { toast } from "react-toastify";
+import { Location, Hub, Operator, Vehicle, Route, Transfer, Schedule } from "@/components/_travelRoute/RouteGraphCanvas";
 
 export default function useTravelRoute() {
-  const queryClient = useQueryClient()
-  
-  const [formData, setFormData] = useState<TravelRouteInput>({
-    name: "",
-    from: { id: "", name: "" },
-    to: { id: "", name: "" },
-    StepRoutes: []
-  })
+  const queryClient = useQueryClient();
 
-  const [editRouteId, setEditRouteId] = useState<string | null>(null);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  // ── 1. QUERIES (FETCH DATA FROM BACKEND) ──
 
-  // --- Fetching Data ---
+  // Fetch Locations (using a high limit to get all city clusters for reference)
+  const { data: locationsResponse, isLoading: isLoadingLocations } = useQuery({
+    queryKey: ["locations-all"],
+    queryFn: () => getCitiesApi(1, 1000)
+  });
+  const locations = (locationsResponse?.data as Location[]) || [];
 
-  const { data: citiesData } = useQuery({
-        queryKey: ["cities"],
-        queryFn: () => getCitiesApi(1, 1000)
-    });
-  
-  const { data: travelRoutesData, isPending: isTravelRoutesLoading } = useQuery({
-    queryKey: ["travel-routes"],
-    queryFn: getTravelRoutesApi,
-  })
+  // Fetch Hubs
+  const { data: hubsResponse, isLoading: isLoadingHubs } = useQuery({
+    queryKey: ["hubs"],
+    queryFn: () => getHubsApi()
+  });
+  const hubs = ((hubsResponse?.data as Hub[]) || []).map((hub: any) => ({
+    ...hub,
+    coordinates: hub.coordinates || hub.location?.coordinates || [77.0, 31.0]
+  })) as Hub[];
 
-  const { data: singleRouteData, isPending: isSingleRouteLoading } = useQuery({
-    queryKey: ["travel-route", editRouteId],
-    queryFn: () => getTravelRouteByIdApi(editRouteId as string),
-    enabled: !!editRouteId,
-  })
+  // Fetch Operators
+  const { data: operatorsResponse, isLoading: isLoadingOperators } = useQuery({
+    queryKey: ["operators"],
+    queryFn: () => getOperatorsApi()
+  });
+  const operators = (operatorsResponse?.data as Operator[]) || [];
 
-  useEffect(() => {
-    if (singleRouteData?.data) {
-      const route = singleRouteData.data;
-      setFormData({
-        _id: route._id,
-        name: route.name || "",
-        from: route.from,
-        to: route.to,
-        StepRoutes: (route.routes || []).map((step: any) => ({
-           ...step,
-           _parentStepId: step.previousRoutesTrack?.length > 1 ? step.previousRoutesTrack[step.previousRoutesTrack.length - 2] : ""
-        }))
-      });
-    }
-  }, [singleRouteData]);
+  // Fetch Vehicles
+  const { data: vehiclesResponse, isLoading: isLoadingVehicles } = useQuery({
+    queryKey: ["vehicles"],
+    queryFn: () => getVehiclesApi()
+  });
+  const vehicles = (vehiclesResponse?.data as Vehicle[]) || [];
 
-  // --- Mutations ---
+  // Fetch Routes
+  const { data: routesResponse, isLoading: isLoadingRoutes } = useQuery({
+    queryKey: ["routes"],
+    queryFn: () => getRoutesApi()
+  });
+  const routes = (routesResponse?.data as Route[]) || [];
 
-  const { mutate: createRoute, isPending: isCreateLoading } = useMutation({
-    mutationFn: createTravelRouteApi,
+  // Fetch Transfers
+  const { data: transfersResponse, isLoading: isLoadingTransfers } = useQuery({
+    queryKey: ["transfers"],
+    queryFn: () => getTransfersApi()
+  });
+  const transfers = (transfersResponse?.data as Transfer[]) || [];
+
+  // Fetch Schedules
+  const { data: schedulesResponse, isLoading: isLoadingSchedules } = useQuery({
+    queryKey: ["schedules"],
+    queryFn: () => getSchedulesApi()
+  });
+  const schedules = (schedulesResponse?.data as Schedule[]) || [];
+
+  const isLoading =
+    isLoadingLocations ||
+    isLoadingHubs ||
+    isLoadingOperators ||
+    isLoadingVehicles ||
+    isLoadingRoutes ||
+    isLoadingTransfers ||
+    isLoadingSchedules;
+
+  // ── 2. MUTATIONS (CREATE/DELETE CALLS TO BACKEND) ──
+
+  // Cities
+  const createCityMutation = useMutation({
+    mutationFn: createCityApi,
     onSuccess: () => {
-        toast.success("Travel route created successfully");
-        queryClient.invalidateQueries({ queryKey: ["travel-routes"] })
-        resetForm();
+      toast.success("City created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["locations-all"] });
     },
-    onError: (error: any) => {
-      toast.error(error.message || "Failed to create travel route");
-    }
-  })
+    onError: (err: string) => toast.error(err)
+  });
 
-  const { mutate: updateRoute, isPending: isUpdateLoading, isSuccess: isUpdateSuccess } = useMutation({
-    mutationFn: updateTravelRouteApi,
+  // Hubs
+  const createHubMutation = useMutation({
+    mutationFn: createHubApi,
     onSuccess: () => {
-        toast.success("Travel route updated successfully");
-        queryClient.invalidateQueries({ queryKey: ["travel-routes"] })
-        resetForm();
+      toast.success("Hub created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["hubs"] });
     },
-    onError: (error: any) => {
-      toast.error(error.message || "Failed to update travel route");
-    }
-  })
+    onError: (err: string) => toast.error(err)
+  });
 
-  const { mutate: deleteRoute, isPending: isDeleteLoading } = useMutation({
-    mutationFn: deleteTravelRouteApi,
+  const deleteHubMutation = useMutation({
+    mutationFn: deleteHubApi,
     onSuccess: () => {
-        toast.success("Travel route deleted successfully");
-        setIsDeleteDialogOpen(false);
-        queryClient.invalidateQueries({ queryKey: ["travel-routes"] })
+      toast.success("Hub deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["hubs"] });
     },
-    onError: (error: any) => {
-      toast.error(error.message || "Failed to delete travel route");
-    }
-  })
+    onError: (err: string) => toast.error(err)
+  });
 
-  // --- Form Helpers ---
+  // Operators
+  const createOperatorMutation = useMutation({
+    mutationFn: createOperatorApi,
+    onSuccess: () => {
+      toast.success("Operator registered successfully!");
+      queryClient.invalidateQueries({ queryKey: ["operators"] });
+    },
+    onError: (err: string) => toast.error(err)
+  });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    const val = type === "number" ? Number(value) : value;
+  const deleteOperatorMutation = useMutation({
+    mutationFn: deleteOperatorApi,
+    onSuccess: () => {
+      toast.success("Operator deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["operators"] });
+    },
+    onError: (err: string) => toast.error(err)
+  });
 
-    if (name.includes(".")) {
-      const keys = name.split(".");
-      setFormData((prev: any) => {
-        let updated = { ...prev };
-        let current = updated;
-        for (let i = 0; i < keys.length - 1; i++) {
-          const key = keys[i];
-          current[key] = Array.isArray(current[key]) ? [...current[key]] : { ...current[key] };
-          current = current[key];
-        }
-        current[keys[keys.length - 1]] = val;
-        return updated;
-      });
-      return;
-    }
+  // Vehicles
+  const createVehicleMutation = useMutation({
+    mutationFn: createVehicleApi,
+    onSuccess: () => {
+      toast.success("Vehicle mapped successfully!");
+      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+    },
+    onError: (err: string) => toast.error(err)
+  });
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: val,
-    }));
-  };
+  const deleteVehicleMutation = useMutation({
+    mutationFn: deleteVehicleApi,
+    onSuccess: () => {
+      toast.success("Vehicle deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+    },
+    onError: (err: string) => toast.error(err)
+  });
 
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      from: { id: "", name: "" },
-      to: { id: "", name: "" },
-      StepRoutes: []
-    });
-    setEditRouteId(null);
-  };
+  // Routes
+  const createRouteMutation = useMutation({
+    mutationFn: createRouteApi,
+    onSuccess: () => {
+      toast.success("Intercity route created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["routes"] });
+    },
+    onError: (err: string) => toast.error(err)
+  });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    // Auto-calculate cumulative totals for each step based on previousRoutesTrack
-    const finalFormData: any = { ...formData };
-    finalFormData.StepRoutes = (finalFormData.StepRoutes || []).map((step: any) => {
-       const getAncestors = (currentStepId: string): any[] => {
-          const currentStep = (finalFormData.StepRoutes as any[]).find((s: any) => s.stepId === currentStepId);
-          if (!currentStep || !currentStep._parentStepId) return [];
-          const parent = (finalFormData.StepRoutes as any[]).find((s: any) => s.stepId === currentStep._parentStepId);
-          if (!parent) return [];
-          return [...getAncestors(parent.stepId), parent];
-       };
+  const deleteRouteMutation = useMutation({
+    mutationFn: deleteRouteApi,
+    onSuccess: () => {
+      toast.success("Intercity route deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["routes"] });
+    },
+    onError: (err: string) => toast.error(err)
+  });
 
-       const ancestors = getAncestors(step.stepId).filter(Boolean);
-       const previousRoutesTrack = [...ancestors.map(a => a.stepId), step.stepId];
+  // Transfers
+  const createTransferMutation = useMutation({
+    mutationFn: createTransferApi,
+    onSuccess: () => {
+      toast.success("Local transfer created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["transfers"] });
+    },
+    onError: (err: string) => toast.error(err)
+  });
 
-       let totalMinCost = step.travelDetails.minCost || 0;
-       let totalMaxCost = step.travelDetails.maxCost || 0;
-       let totalDuration = step.travelDetails.duration || 0;
-       let totalDistance = step.travelDetails.distance || 0;
-       let totalStops = ancestors.length;
+  const deleteTransferMutation = useMutation({
+    mutationFn: deleteTransferApi,
+    onSuccess: () => {
+      toast.success("Local transfer deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["transfers"] });
+    },
+    onError: (err: string) => toast.error(err)
+  });
 
-       ancestors.forEach((s: any) => {
-           totalMinCost += (s.travelDetails.minCost || 0);
-           totalMaxCost += (s.travelDetails.maxCost || 0);
-           totalDuration += (s.travelDetails.duration || 0);
-           totalDistance += (s.travelDetails.distance || 0);
-       });
+  // Schedules
+  const createScheduleMutation = useMutation({
+    mutationFn: createScheduleApi,
+    onSuccess: () => {
+      toast.success("Vehicle schedule created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["schedules"] });
+    },
+    onError: (err: string) => toast.error(err)
+  });
 
-       const finalStep = {
-           ...step,
-           previousRoutesTrack,
-           totalMinCost,
-           totalMaxCost,
-           totalDuration,
-           totalDistance,
-           totalStops
-       };
-
-       delete finalStep._parentStepId;
-       return finalStep;
-    });
-
-    try {
-      travelRouteSchema.parse(finalFormData)
-      if (finalFormData._id) {
-        updateRoute(finalFormData);
-      } else {
-        createRoute(finalFormData)
-      }
-    } catch (error: any) {
-      if (error.errors) {
-        error.errors.forEach((err: any) => toast.error(err.message));
-      } else {
-        console.error(error);
-      }
-    }
-  }
+  const deleteScheduleMutation = useMutation({
+    mutationFn: deleteScheduleApi,
+    onSuccess: () => {
+      toast.success("Vehicle schedule deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["schedules"] });
+    },
+    onError: (err: string) => toast.error(err)
+  });
 
   return {
-    formData,
-    setFormData,
-    handleInputChange,
-    handleSubmit,
-    isCreateLoading,
-    isUpdateLoading,
-    isDeleteLoading,
-    isTravelRoutesLoading,
-    isSingleRouteLoading,
-    isUpdateSuccess,
-    travelRoutesData,
-    deleteRoute,
-    setIsDeleteDialogOpen,
-    isDeleteDialogOpen,
-    setEditRouteId,
-    editRouteId,
-    resetForm,
-    citiesData,
-    createRoute,
-    updateRoute
-  }
+    locations,
+    hubs,
+    operators,
+    vehicles,
+    routes,
+    transfers,
+    isLoading,
+
+    createCity: createCityMutation.mutate,
+    createCityAsync: createCityMutation.mutateAsync,
+    createHub: createHubMutation.mutate,
+    createHubAsync: createHubMutation.mutateAsync,
+    deleteHub: deleteHubMutation.mutate,
+    
+    createOperator: createOperatorMutation.mutate,
+    createOperatorAsync: createOperatorMutation.mutateAsync,
+    deleteOperator: deleteOperatorMutation.mutate,
+    
+    createVehicle: createVehicleMutation.mutate,
+    createVehicleAsync: createVehicleMutation.mutateAsync,
+    deleteVehicle: deleteVehicleMutation.mutate,
+    
+    createRoute: createRouteMutation.mutate,
+    createRouteAsync: createRouteMutation.mutateAsync,
+    deleteRoute: deleteRouteMutation.mutate,
+    
+    createTransfer: createTransferMutation.mutate,
+    createTransferAsync: createTransferMutation.mutateAsync,
+    deleteTransfer: deleteTransferMutation.mutate,
+    
+    schedules,
+    createSchedule: createScheduleMutation.mutate,
+    createScheduleAsync: createScheduleMutation.mutateAsync,
+    deleteSchedule: deleteScheduleMutation.mutate
+  };
 }

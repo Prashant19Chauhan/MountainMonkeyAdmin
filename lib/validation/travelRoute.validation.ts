@@ -1,186 +1,69 @@
 import { z } from "zod";
 
-/* =========================
-   ObjectId Validator (v4)
- ========================= */
+export const hubSchema = z.object({
+  _id: z.string().optional(),
+  cityId: z.string().min(1, "City cluster reference is required"),
+  name: z.string().min(2, "Hub name must be at least 2 characters"),
+  type: z.enum(["BUS_STAND", "RAILWAY_STATION", "AIRPORT", "METRO_STATION", "TAXI_STAND", "PICKUP_POINT", "CUSTOM_HUB"]),
+  address: z.string().min(3, "Address is required"),
+  coordinates: z.array(z.number()).length(2, "Coordinates must be [longitude, latitude]")
+});
 
-const objectId = z
-  .string()
-  .min(1, "Reference ID cannot be empty")
-  .regex(/^[0-9a-fA-F]{24}$/, "Invalid database reference ID format");
+export const operatorSchema = z.object({
+  _id: z.string().optional(),
+  name: z.string().min(2, "Operator brand must be at least 2 characters"),
+  logo: z.string().optional(),
+  supportNumber: z.string().min(5, "Support number is required"),
+  supportEmail: z.string().email("Invalid email address")
+});
 
-/* =========================
-   Travel Details
- ========================= */
+export const vehicleSchema = z.object({
+  _id: z.string().optional(),
+  operatorId: z.string().min(1, "Operator reference is required"),
+  vehicleNumber: z.string().min(2, "Plate registration is required"),
+  vehicleName: z.string().min(2, "Vehicle name is required"),
+  mode: z.enum(["BUS", "TRAIN", "FLIGHT", "METRO", "CAB", "AUTO"]),
+  capacity: z.number().min(1, "Capacity must be at least 1 seat")
+});
 
-const travelDetailsSchema = z
-  .object({
-    mode: z
-      .string()
-      .min(1, "Transit mode is required")
-      .min(2, "Transit mode must contain at least 2 characters"),
+export const routeSchema = z.object({
+  _id: z.string().optional(),
+  sourceHubId: z.string().min(1, "Source origin hub is required"),
+  destinationHubId: z.string().min(1, "Destination target hub is required"),
+  operatorId: z.string().optional(),
+  vehicleId: z.string().optional(),
+  mode: z.enum(["BUS", "TRAIN", "FLIGHT", "METRO"]),
+  distanceKm: z.number().min(1, "Distance must be at least 1 Km"),
+  durationMin: z.number().min(1, "Duration must be at least 1 minute"),
+  basePrice: z.number().min(0, "Base price cannot be negative"),
+  currentPrice: z.number().min(0, "Current dynamic rate cannot be negative"),
+  active: z.boolean().default(true)
+});
 
-    minCost: z
-      .number({ message: "Minimum transit cost must be a numeric value" })
-      .min(0, "Minimum transit cost cannot be a negative value"),
+export const transferSchema = z.object({
+  _id: z.string().optional(),
+  cityId: z.string().min(1, "City reference is required"),
+  sourceHubId: z.string().min(1, "Source origin station is required"),
+  destinationHubId: z.string().min(1, "Destination target station is required"),
+  transferMode: z.enum(["WALK", "AUTO", "CAB", "METRO", "SHUTTLE"]),
+  distanceKm: z.number().min(0.1, "Distance must be at least 0.1 Km"),
+  durationMin: z.number().min(1, "Duration must be at least 1 minute"),
+  estimatedCost: z.number().min(0, "Estimated cost cannot be negative")
+});
 
-    maxCost: z
-      .number({ message: "Maximum transit cost must be a numeric value" })
-      .min(0, "Maximum transit cost cannot be a negative value"),
+export const scheduleSchema = z.object({
+  _id: z.string().optional(),
+  routeId: z.string().min(1, "Route reference is required"),
+  departureTime: z.string().min(1, "Departure date & time is required"),
+  arrivalTime: z.string().min(1, "Arrival date & time is required"),
+  totalSeats: z.number().min(1, "Total capacity must be at least 1 seat"),
+  availableSeats: z.number().min(0, "Available seats cannot be negative"),
+  price: z.number().min(0, "Price cannot be negative")
+});
 
-    duration: z
-      .number({ message: "Duration must be a numeric value in minutes" })
-      .min(0, "Duration cannot be a negative value"),
-
-    provider: z
-      .string()
-      .min(1, "Transit operator/provider is required")
-      .min(2, "Transit operator must contain at least 2 characters"),
-
-    distance: z
-      .number({ message: "Distance must be a numeric value in kilometers" })
-      .min(0, "Distance cannot be a negative value"),
-
-    difficultyInTravelling: z
-      .string()
-      .min(1, "Transit difficulty description is required")
-      .min(2, "Transit difficulty description must contain at least 2 characters"),
-  })
-  .refine((data) => data.maxCost >= data.minCost, {
-    message: "Maximum transit cost must be greater than or equal to minimum transit cost",
-    path: ["maxCost"],
-  });
-
-/* =========================
-   Step Schema
- ========================= */
-
-const stepSchema = z
-  .object({
-    stepId: z
-      .string()
-      .min(1, "Step ID cannot be empty"),
-
-    from: z.object({
-      name: z
-        .string()
-        .min(1, "Origin step name is required"),
-
-      location: z
-        .object({
-          address: z.string().optional(),
-
-          coordinates: z
-            .object({
-              longitude: z
-                .number({ message: "Longitude coordinates must be a number" })
-                .min(-180, "Longitude must be between -180 and 180")
-                .max(180, "Longitude must be between -180 and 180")
-                .optional(),
-              latitude: z
-                .number({ message: "Latitude coordinates must be a number" })
-                .min(-90, "Latitude must be between -90 and 90")
-                .max(90, "Latitude must be between -90 and 90")
-                .optional(),
-            })
-            .optional(),
-
-          mainCity: objectId.optional(),
-        })
-        .optional(),
-    }),
-
-    to: z.object({
-      name: z
-        .string()
-        .min(1, "Destination step name is required"),
-
-      location: z
-        .object({
-          address: z.string().optional(),
-
-          coordinates: z
-            .object({
-              longitude: z
-                .number({ message: "Longitude coordinates must be a number" })
-                .min(-180, "Longitude must be between -180 and 180")
-                .max(180, "Longitude must be between -180 and 180")
-                .optional(),
-              latitude: z
-                .number({ message: "Latitude coordinates must be a number" })
-                .min(-90, "Latitude must be between -90 and 90")
-                .max(90, "Latitude must be between -90 and 90")
-                .optional(),
-            })
-            .optional(),
-
-          mainCity: objectId.optional(),
-        })
-        .optional(),
-    }),
-
-    travelDetails: travelDetailsSchema,
-
-    previousRoutesTrack: z.array(z.string()).optional(),
-
-    isDestinationReached: z.boolean().optional(),
-
-    totalMinCost: z
-      .number({ message: "Cumulative minimum cost must be a numeric value" })
-      .min(0, "Cumulative minimum cost cannot be negative"),
-      
-    totalMaxCost: z
-      .number({ message: "Cumulative maximum cost must be a numeric value" })
-      .min(0, "Cumulative maximum cost cannot be negative"),
-      
-    totalDuration: z
-      .number({ message: "Cumulative duration must be a numeric value" })
-      .min(0, "Cumulative duration cannot be negative"),
-      
-    totalDistance: z
-      .number({ message: "Cumulative distance must be a numeric value" })
-      .min(0, "Cumulative distance cannot be negative"),
-      
-    totalStops: z
-      .number({ message: "Cumulative stops must be a numeric value" })
-      .min(0, "Cumulative stops count cannot be negative"),
-  })
-  .refine((data) => data.totalMaxCost >= data.totalMinCost, {
-    message: "Cumulative maximum cost must be greater than or equal to cumulative minimum cost",
-    path: ["totalMaxCost"],
-  });
-
-/* =========================
-   Main Schema
- ========================= */
-
-export const travelRouteSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1, "Transit route name is required")
-      .min(2, "Transit route name must be at least 2 characters"),
-
-    from: z.object({
-      id: objectId,
-      name: z
-        .string()
-        .min(1, "Origin city anchor name is required"),
-    }),
-
-    to: z.object({
-      id: objectId,
-      name: z
-        .string()
-        .min(1, "Destination city anchor name is required"),
-    }),
-
-    StepRoutes: z
-      .array(stepSchema)
-      .min(1, "At least one step route connection leg is required in the timeline index"),
-    
-    _id: objectId.optional(),
-  })
-  .strict();
-
-export type TravelRouteInput = z.infer<typeof travelRouteSchema>;
+export type HubInput = z.infer<typeof hubSchema>;
+export type OperatorInput = z.infer<typeof operatorSchema>;
+export type VehicleInput = z.infer<typeof vehicleSchema>;
+export type RouteInput = z.infer<typeof routeSchema>;
+export type TransferInput = z.infer<typeof transferSchema>;
+export type ScheduleInput = z.infer<typeof scheduleSchema>;

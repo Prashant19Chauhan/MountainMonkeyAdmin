@@ -1,5 +1,6 @@
-import TravelRoutesClient from '@/components/travel-routes/TravelRoutesClient';
+import React from 'react';
+import TravelRoutesDashboard from '@/components/_travelRoute/TravelRoutesDashboard';
 
-export default function RouteManagementPage() {
-  return <TravelRoutesClient />;
+export default function TravelRoutesPage() {
+  return <TravelRoutesDashboard />;
 }
