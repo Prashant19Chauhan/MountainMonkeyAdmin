@@ -170,7 +170,7 @@ export default function StoriesModerationPage() {
   );
 
   return (
-    <div className="p-6 md:p-10 max-w-7xl mx-auto min-h-screen bg-[#F8FAFC] text-slate-800 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden font-['Inter',sans-serif]">
+    <div className="p-3 sm:p-6 md:p-10 max-w-7xl mx-auto min-h-screen bg-[#F8FAFC] text-slate-800 rounded-2xl sm:rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden font-['Inter',sans-serif]">
       {/* Background Soft Orbs */}
       <div className="absolute top-[-25%] left-[-10%] w-[60%] h-[60%] rounded-full bg-gradient-to-br from-indigo-500/5 to-transparent blur-[140px] pointer-events-none" />
       <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-tr from-orange-500/5 to-transparent blur-[120px] pointer-events-none" />
@@ -212,12 +212,12 @@ export default function StoriesModerationPage() {
           />
         </div>
         
-        <div className="lg:col-span-5 flex items-center gap-1.5 bg-white p-1.5 border border-slate-200 rounded-2xl">
+        <div className="lg:col-span-5 flex items-center gap-1 bg-white p-1 sm:p-1.5 border border-slate-200 rounded-2xl">
           {['pending', 'approved', 'rejected', 'all'].map((s) => (
             <button
               key={s}
               onClick={() => setFilter(s)}
-              className={`flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border-0 cursor-pointer ${
+              className={`flex-1 py-2 sm:py-3 rounded-xl text-[9px] sm:text-xs font-bold uppercase tracking-normal sm:tracking-wider transition-all border-0 cursor-pointer ${
                 filter === s 
                 ? 'bg-slate-900 text-white shadow-sm font-black' 
                 : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 bg-transparent'
@@ -285,7 +285,7 @@ export default function StoriesModerationPage() {
                 </div>
 
                 {/* Content Area */}
-                <div className="p-8 flex-1 flex flex-col justify-between">
+                <div className="p-5 sm:p-8 flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-2 text-slate-400 text-[9px] font-black uppercase tracking-widest mb-3">
                       <Calendar size={11} className="text-slate-400" />
@@ -302,8 +302,8 @@ export default function StoriesModerationPage() {
                   </div>
 
                   {/* Author Box and Moderation Actions */}
-                  <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
-                    <div className="flex items-center gap-3.5 min-w-0 max-w-[55%]">
+                  <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5 min-w-0 sm:max-w-[55%]">
                       <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-black text-sm shadow-inner flex-shrink-0">
                         {story.author?.name?.charAt(0).toUpperCase() || 'U'}
                       </div>
@@ -391,10 +391,10 @@ export default function StoriesModerationPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white border border-slate-200 w-full max-w-3xl rounded-[2.5rem] shadow-2xl relative overflow-hidden z-10 max-h-[85vh] flex flex-col text-slate-800"
+              className="bg-white border border-slate-200 w-full max-w-3xl rounded-2xl sm:rounded-[2.5rem] shadow-2xl relative overflow-hidden z-10 max-h-[85vh] flex flex-col text-slate-800"
             >
               {/* Header */}
-              <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <div className="px-5 py-4 sm:px-8 sm:py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div>
                   <span className="text-[9px] font-black uppercase tracking-widest text-indigo-500 block mb-1">Full Article Moderator</span>
                   <h2 className="text-xl font-extrabold text-slate-900 truncate max-w-[500px]">{selectedStory.title}</h2>
@@ -408,7 +408,7 @@ export default function StoriesModerationPage() {
               </div>
 
               {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar bg-white">
+              <div className="flex-1 overflow-y-auto p-5 sm:p-8 space-y-6 custom-scrollbar bg-white">
                 {/* Images Grid */}
                 {selectedStory.images && selectedStory.images.length > 0 && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -542,7 +542,7 @@ export default function StoriesModerationPage() {
               </div>
 
               {/* Action buttons footer */}
-              <div className="px-8 py-5 border-t border-slate-100 bg-slate-50/50 flex items-center justify-end gap-3">
+              <div className="px-5 py-4 sm:px-8 sm:py-5 border-t border-slate-100 bg-slate-50/50 flex flex-wrap sm:flex-nowrap items-center justify-end gap-3">
                 <button
                   onClick={() => setSelectedStory(null)}
                   className="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-500 hover:text-slate-800 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer"

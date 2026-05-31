@@ -88,7 +88,7 @@ export default function TestimonialsModerationPage() {
   );
 
   return (
-    <div className="p-6 md:p-10 max-w-7xl mx-auto min-h-screen bg-[#F8FAFC] text-slate-800 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden font-['Inter',sans-serif]">
+    <div className="p-3 sm:p-6 md:p-10 max-w-7xl mx-auto min-h-screen bg-[#F8FAFC] text-slate-800 rounded-2xl sm:rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden font-['Inter',sans-serif]">
       {/* Background Soft Orbs */}
       <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-indigo-500/5 to-transparent blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-gradient-to-tr from-orange-500/5 to-transparent blur-[100px] pointer-events-none" />
@@ -135,12 +135,12 @@ export default function TestimonialsModerationPage() {
           />
         </div>
         
-        <div className="lg:col-span-5 flex items-center gap-1.5 bg-white p-1.5 border border-slate-200 rounded-2xl">
+        <div className="lg:col-span-5 flex items-center gap-1 bg-white p-1 sm:p-1.5 border border-slate-200 rounded-2xl">
           {['pending', 'approved', 'rejected', 'all'].map((s) => (
             <button
               key={s}
               onClick={() => setFilter(s)}
-              className={`flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border-0 cursor-pointer ${
+              className={`flex-1 py-2 sm:py-3 rounded-xl text-[9px] sm:text-xs font-bold uppercase tracking-normal sm:tracking-wider transition-all border-0 cursor-pointer ${
                 filter === s 
                 ? 'bg-slate-900 text-white shadow-sm font-black' 
                 : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 bg-transparent'
@@ -170,7 +170,7 @@ export default function TestimonialsModerationPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.4 }}
-                className="group relative bg-white p-8 rounded-3xl border border-slate-200/60 shadow-xs hover:border-indigo-500/20 hover:shadow-md transition-all duration-300 flex flex-col justify-between min-h-[300px]"
+                className="group relative bg-white p-5 md:p-8 rounded-3xl border border-slate-200/60 shadow-xs hover:border-indigo-500/20 hover:shadow-md transition-all duration-300 flex flex-col justify-between min-h-[280px] md:min-h-[300px]"
               >
                 {/* Featured Glowing Ring / Icon */}
                 {t.isFeatured && (
