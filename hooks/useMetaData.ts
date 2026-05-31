@@ -139,7 +139,7 @@ export default function useMetaData() {
   const pageList = [
     "route", "stay", "package", "local-info", "destination", "city", "activity", "blog",
     "home-page", "destinations-page", "packages-page", "stays-page", "activities-page",
-    "about-page", "contact-page", "testimonials-page", "faq-page", "terms-page", "privacy-page", "cities-page", "blog-page"
+    "about-page", "contact-page", "testimonials-page", "faq-page", "terms-page", "privacy-page", "cities-page", "blog-page", "travel-routes-page"
   ]
 
   let pageId: string | undefined;

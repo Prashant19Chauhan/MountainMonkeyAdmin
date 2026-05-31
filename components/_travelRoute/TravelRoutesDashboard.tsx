@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   GitBranch, MapPin, Bus, Train, Plane, Navigation, 
   Plus, Search, Filter, Trash2, Edit3, DollarSign, 
@@ -464,6 +465,12 @@ export default function TravelRoutesDashboard() {
             </button>
           </div>
 
+          <Link href="/metadata?travel-routes-page=travel-routes-page" className="no-underline">
+            <button className="px-4 py-2.5 bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-black transition-all flex items-center gap-2 cursor-pointer border-0">
+              <Edit3 size={14} /> Listing SEO
+            </button>
+          </Link>
+
           <button
             onClick={() => setIsCreateModalOpen(true)}
             className="flex items-center justify-center gap-2.5 px-6 py-4 bg-slate-900 text-white rounded-[1.5rem] font-bold text-xs uppercase tracking-wider hover:bg-rose-500 hover:shadow-xl hover:shadow-rose-100 transition-all border-0 cursor-pointer"
@@ -652,10 +659,16 @@ export default function TravelRoutesDashboard() {
                         {route.active ? "Active" : "Inactive"}
                       </span>
                     </td>
-                    <td className="py-4.5 text-right">
+                    <td className="py-4.5 text-right flex items-center justify-end gap-1">
+                      <Link href={`/metadata?route=${route._id}`}>
+                        <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all cursor-pointer border-0 bg-transparent" title="Edit Route SEO Metadata">
+                          <Edit3 size={16} />
+                        </button>
+                      </Link>
                       <button 
                         onClick={() => handleDeleteRoute(route._id)}
                         className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all cursor-pointer border-0 bg-transparent"
+                        title="Delete Route"
                       >
                         <Trash2 size={16} />
                       </button>

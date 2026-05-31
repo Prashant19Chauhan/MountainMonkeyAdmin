@@ -340,6 +340,13 @@ export default function EnquiriesDashboard() {
                 <p className="text-xs font-bold text-slate-700 whitespace-pre-wrap">{selectedEnquiry.message}</p>
               </div>
 
+              {selectedEnquiry.scheduleDetails && (
+                <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl space-y-1 leading-relaxed max-h-[160px] overflow-y-auto">
+                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Selected Journey Schedules</span>
+                  <p className="text-[11px] font-mono text-slate-600 whitespace-pre-wrap leading-normal">{selectedEnquiry.scheduleDetails}</p>
+                </div>
+              )}
+
               {/* Status Update Quick Bar */}
               <div className="flex justify-between items-center bg-slate-50 border border-slate-100 px-4 py-3 rounded-2xl">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mark Status:</span>
